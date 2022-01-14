@@ -12,7 +12,7 @@ function Bisection() {
             <h2>Bisection</h2>
             <h3>x^4-13 = 0</h3>
             <h4>Code :</h4>
-            <p>ans = {calBisection(a,b)}</p>
+            <p>ans = {calBisection(a,b).toFixed(6)}</p>
         
         </div>
     )
