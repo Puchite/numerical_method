@@ -1,0 +1,35 @@
+function calFunction(x){
+    return (Math.pow(x,4))-13
+}
+
+function calBisection(xl, xr){
+
+    let xm = (xl+xr)/2
+    let c = 1
+    let temp = 0
+    while(c>e)
+    {
+        let fxm = calFunction(xm)
+        let fxl = calFunction(xl)
+        let fxr = calFunction(xr)
+
+        if (fxm*fxr > 0){
+            temp = xr
+            xr = xm
+        }
+        else{
+            temp = xl
+            xl = xm
+        }
+
+        c = (xm-temp)/xm
+        c = Math.abs(c)
+        console.log(c)
+        xm = (xl+xr)/2
+        
+    }
+
+    console.log(xm)
+    return xm
+
+}
