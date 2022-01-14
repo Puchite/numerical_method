@@ -1,24 +1,27 @@
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import Home from './pages/Home';
+import Course from './pages/Course';
+import About from './pages/About';
+import Bisection from './Course/Bisection';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path='/course' element={<Course />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/bisection' element={<Bisection />} />
+          <Route component={Error} > </Route>
+        </Routes>
+      </Router>
+    </>
   );
 }
 
