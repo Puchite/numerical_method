@@ -8,6 +8,7 @@ function Course() {
             <h1>Course</h1> 
                 <h2>Root of Equation
                     <Link to="/bisection" ><button>Bisection</button></Link>
+                    <Link to="/false-position" ><button>False-Position</button></Link>
                 </h2>    
         </div>
     )

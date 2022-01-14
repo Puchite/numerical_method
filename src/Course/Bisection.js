@@ -11,6 +11,7 @@ function Bisection() {
         <div className='bisection'>
             <h2>Bisection</h2>
             <h3>x^4-13 = 0</h3>
+            <h4>Code :</h4>
             <p>ans = {calBisection(a,b)}</p>
         
         </div>
