@@ -4,7 +4,7 @@ import React from 'react'
 
 let a = 1.5
 let b = 2.0
-let e = 0.0000001
+let e = 0.0000000001
 
 function Bisection() {
     return (
