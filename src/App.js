@@ -14,11 +14,11 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" exact element={<Home />} />
-          <Route path='/course' element={<Course />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/bisection' element={<Bisection />} />
-          <Route component={Error} > </Route>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path='/course' element={<Course />} />
+          <Route exact path='/about' element={<About />} />
+          <Route exact path='/bisection' element={<Bisection />} />
+          <Route element={Error} > </Route>
         </Routes>
       </Router>
     </>
