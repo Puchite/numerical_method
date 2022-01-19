@@ -16,7 +16,7 @@ function Navbar() {
         <div className='navbar'>
           <Link to='#' className='menu-bars'>
             <FaIcons.FaBars onClick={showSidebar} />
-          </Link>
+          </Link>          
         </div>
         <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
           <ul className='nav-menu-items' onClick={showSidebar}>
@@ -25,6 +25,7 @@ function Navbar() {
                 <AiIcons.AiOutlineClose />
               </Link>
             </li>
+            
             {SidebarData.map((item, index) => {
               return (
                 <li key={index} className={item.cName}>
@@ -33,8 +34,10 @@ function Navbar() {
                     <span>{item.title}</span>
                   </Link>
                 </li>
+                
               );
             })}
+            
           </ul>
         </nav>
       </IconContext.Provider>
