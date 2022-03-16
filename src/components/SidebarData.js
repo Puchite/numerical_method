@@ -22,7 +22,7 @@ export const SidebarData = [
 
     {
         title: 'Course',
-        path: '/course',
+        path: '/',
         icon: <Bs_Icons.BsFillBookFill />,
         cName: 'nav-text'
     },
