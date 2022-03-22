@@ -11,6 +11,7 @@ import LinearAlgebra from './Course/LinearAlgebra/LinearAlgebra'
 import Jacobi from './Course/LinearAlgebra/Jacobi';
 import GaussSeidel from './Course/LinearAlgebra/GaussSeidel';
 import Conjugate from './Course/LinearAlgebra/Conjugate';
+import Polation from './Course/Polation/Polation';
 
 function App() {
 
@@ -32,6 +33,8 @@ function App() {
           <Route path='/linear_algebra/jacobi' element={<Jacobi/>} />
           <Route path='/linear_algebra/gauss_seidel' element={<GaussSeidel/>} />
           <Route path='/linear_algebra/conjugate' element={<Conjugate/>} />
+          {/* Course of Polation */}
+          <Route path='/polation' element={<Polation/>} />      
 
         </Routes>
         

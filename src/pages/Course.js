@@ -35,7 +35,7 @@ function Course() {
 
                 <div className='bg-linear'>
 
-                    <div className='linear-couse'>
+                    <div className='linear-course'>
                         <h2 style={{padding:'2rem'}}>    
                             Linear Algebra
                         </h2>
@@ -50,16 +50,19 @@ function Course() {
 
                 </div>
 
-                <div className='bg-3'>
+                <div className='bg-polation'>
 
-                    <div className='3-couse'>
+                    <div className='polation-course'>
                         
-                        <h2>    
-                            Coming soon
+                        <h2 style={{padding:'2rem'}}>    
+                            Polation
                         </h2>
-                        <p>
-                            Course 3 
-                        </p>                        
+                        
+                        <p style={{padding:'2rem'}}>
+                            This is Polation Course
+                        </p>
+                        
+                        <Link to="./polation" ><button type='button' class='btn btn-primary' className='bt_polation'>View Polation Content</button></Link>
                      
                     </div>
 

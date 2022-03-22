@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react'
-import './RootEquation.css'
 import functionPlot from 'function-plot'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -8,6 +7,8 @@ import * as math from 'mathjs'
 import Desmos from 'desmos'
 import { Chart } from 'chart.js'
 import  { MathJax, MathJaxContext } from 'better-react-mathjax'
+import { DataGrid } from '@mui/x-data-grid';
+
 import {
     LineChart,
     Line,
@@ -39,10 +40,7 @@ let calculator = Desmos.GraphingCalculator(elt);
 // );
 
 const methodOption = [
-    { value: "bisection", label: "Bisection Method"},
-    { value: "falsePosition", label: "False Position Method" },
-    { value: "onePoint", label: "One Point Method" },
-    { value: "newtonRaphson", label: "Newton Raphson Method"},
+    { value: "newtonDivide", label: "Newton's Divided-Differences"},
 ]
 
 
@@ -64,10 +62,48 @@ const options = {
     }
 }
 
-function RootEquation(){
+const columnsTable = [
+    { 
+        field: 'id',
+        headerName: 'ID', 
+        width: 70,
+        type: 'number',
+        editable: false,
+        sortable: false,
+    },
+    {
+        field: 'x',
+        headerName: 'X',
+        width: 150,
+        type: 'number',
+        editable: false,
+        sortable: false,
+    },
+    {
+        field: 'y',
+        headerName: 'Y',
+        width: 150,
+        type: 'number',
+        editable: false,
+        sortable: false,
+    }
+  ];
+
+
+function Polation(){
     
     const [ left, setLeft ] = useState('-10')
     const [ right, setRight ] = useState('10')
+    const [ x, setX ] = useState('')
+    const [ y, setY ] = useState('')
+    const [ rowTable, setRowTable ] = useState([
+        {
+            id: '',
+            x: '',
+            y: ''
+        }
+    ])
+
     const [ equation, setEquation ] = useState('')
     const [ answer, setAnswer ] = useState(0)
     const [ dataError, setDataError ] = useState([])
@@ -86,6 +122,9 @@ function RootEquation(){
     const equationRef = useRef(equation)
     const problemRef = useRef(problem)
     const chartDataRef = useRef(chartData)
+    const rowTableRef = useRef(rowTable)
+    const xRef = useRef(x)
+    const yRef = useRef(y)
     
     let tempAnswer;
 
@@ -106,16 +145,19 @@ function RootEquation(){
             equationRef.current = equation
             problemRef.current = problem 
             chartDataRef.current = chartData
+            rowTableRef.current = rowTable
+            xRef.current = x
+            yRef.current = y
         }
 
         
 
-    }, [equation, problem, chartData]);
+    }, [equation, problem, chartData, rowTable]);
 
 
     const getData = async () => {
         
-        await axios.get('http://localhost:3001/root-equation')
+        await axios.get('http://localhost:3001/polation')
                                    .then((res) =>{
                                         console.log('fetch success data is', res.data)
                                         const response = res.data
@@ -124,36 +166,6 @@ function RootEquation(){
                                     }, (error) => {
                                         console.log(error)})
         
-    }
-
-    const handleLeftInput = (e) => {
-
-        if(e.target.value === '')
-        {
-            setLeft('-100')
-        }
-        else
-        {
-            setLeft(e.target.value)
-        }
-        
-    }
-
-    const handleRightInput = (e) => {
-
-        if(e.target.value === '')
-        {
-            setRight('100')
-        }
-        else
-        {
-            setRight(e.target.value)
-        }
-        
-    }
-
-    const handleStartInput = (e) =>{
-        setStart(e.target.value)
     }
 
     const handleEquationInput = (e) => {
@@ -177,26 +189,24 @@ function RootEquation(){
         switch (e.target.value)
         {
             
-            case "bisection":         
-                setapiProblem(res.bisection)
+            case "newtonDivide":         
+                setapiProblem(res.newtonDivide)
                 break
             
-            case 'falsePosition':
+            case '1':
                 setapiProblem(res.falsePosition)
                 break
             
-            case 'onePoint':
-                console.log('onePoint')
+            case '2':
                 setapiProblem(res.onePoint)
                 break
 
-            case 'newtonRaphson':
-                console.log('newtonRaphson')
+            case '3':
                 setapiProblem(res.newtonRaphson)
                 break
 
             default:
-                console.log('No Method Found')
+                console.log('No Course Found')
         }
     
     }
@@ -204,7 +214,19 @@ function RootEquation(){
     const handleProblem = (e) => {
 
         setProblem(e.target.value)
-       
+        setX(apiProblem[e.target.value-1].x)
+        setY(apiProblem[e.target.value-1].y)
+        console.log(apiProblem[e.target.value-1].x)
+        let obj = []
+        for(let index = 0; index < apiProblem[e.target.value-1].x.length;  index++)
+        {
+            console.log("X",apiProblem[e.target.value-1].x[index])
+            console.log("Y",apiProblem[e.target.value-1].y[index])
+            obj.push({id:index, x:apiProblem[e.target.value-1].x[index], y:apiProblem[e.target.value-1].y[index]})
+        }
+
+        setRowTable(obj)
+        console.log(rowTable)
         if(e.target.value === 'Custom')
         {
             setDisableinput(false)
@@ -266,12 +288,8 @@ function RootEquation(){
     {
         switch(method)
         {
-            case 'bisection':
-                console.log('bisection')
-                console.log('equation: '+problem+' left: '+left+' right:'+right)
-                // setAnswer(calBisection(problem, left, right))
-                tempAnswer = calBisection(problem, left, right)
-                console.log("Temp answer:"+tempAnswer)
+            case 'newtonDivide':
+                calnewtonDivide(x, y)
                 setAnswer(tempAnswer)
                 break
 
@@ -358,6 +376,25 @@ function RootEquation(){
             console.log("Equation Error")
         }
         
+    }
+
+    function calnewtonDivide(x, y){
+        
+        function recursiveC(x, y, c){
+
+            if(c === 0)
+            {
+                return c
+            }
+            else if(c > 0)
+            {
+                return recursiveC(x, y, c-1)
+            }
+            else
+            {
+
+            }
+        }
     }
 
     function calBisection(equation, xl, xr){
@@ -586,7 +623,7 @@ function RootEquation(){
             <div className='super_header'>
 
                 <h1>
-                    This is Root Equation 
+                    This is Polation Course 
                 </h1>
 
                 <label>Method:</label>
@@ -603,7 +640,7 @@ function RootEquation(){
                 <select onChange={handleProblem}>
                     <option value="none" >Select Equation</option>
                     <option value="Custom">Custom</option>
-                    {apiProblem ? apiProblem.map(item => <option key={item.problem} >{item.problem}</option>):null}
+                    {apiProblem ? apiProblem.map(item => <option key={item.id} >{item.id}</option>):null}
                     
                 </select>                                                            
                 
@@ -629,83 +666,13 @@ function RootEquation(){
                             />
                         </div>
 
-                        <div className='left-input-box'>
-                            <label>Left:</label>
-                            <input 
-                                type="text" 
-                                onChange={handleLeftInput}
-                                placeholder='Left'    
-                            />                            
-                        </div>
-                        
-                        <div className='right-input-box'>                        
-                            <label>Right:</label> 
-                            <input 
-                                type="text"   
-                                onChange={handleRightInput}  
-                                placeholder="Right"
-                            />
-                        </div>
-
                         <input type="submit" value="Submit" />
 
                     </div>
                 
                 }
-                {
-                    method !== 'bisection' & method !== 'falsePosition' & method !== 'none' &&
 
-                    <div className='input-div'>
-
-                        <div className='equation-input-div'>
-                            <label>Equation:</label>
-                            <input 
-                                type="text" 
-                                onChange={handleEquationInput} 
-                                disabled={disableInput} 
-                                placeholder='equation'
-                            />
-                        </div>
-                        
-                        <div className='start-input-box'> 
-                            <label>Start:</label>
-                            <input 
-                                type="text" 
-                                // value={left} 
-                                onChange={handleStartInput}
-                                // disabled={disableInput} 
-                                placeholder='Start'    
-                            />
-                        </div>
-
-                        <input type="submit" value="Submit" />
-
-                    </div>
                 
-                }
-                
-                {/* <label>
-                    Left:
-                    <input 
-                        type="text" 
-                        // value={left} 
-                        onChange={handleLeftInput}
-                        // disabled={disableInput} 
-                        placeholder='Left'    
-                    />
-                </label>
-
-                <label>
-                    Right:
-                    <input 
-                        type="text" 
-                        // value={right}  
-                        onChange={handleRightInput}
-                        // disabled={disableInput}  
-                        placeholder="Right"
-                    />
-                </label> */}
-                    
             </form>
 
             <br/>
@@ -713,25 +680,21 @@ function RootEquation(){
             <div className='content' style={{textAlign: 'center'}}>
 
                 <div className='problem-div'>
-                    <h2> Equation is 
-                        <MathJaxContext>
-                            {showProblem(problem)}
-                        </MathJaxContext>                    
-                    </h2>
+                    <div style={{ height: 400, width: '100%' }}>
+                        <DataGrid
+                            rows={rowTable}
+                            columns={columnsTable}
+                            pageSize={5}
+                            rowsPerPageOptions={[5]}
+                        />
+                    </div>
                 </div>
 
                 <div className='answer-div'>
                     <h2> answer is  {answer} </h2>
                 </div>
                 
-            </div>
-            
-            <div className='plot-div'>
-                <div className='plot' id='elt' style={{width: '600px', 
-                                      height: '400px',}}> 
-                </div>
-            </div>
-            
+            </div>                        
             
             <div className='chart'>
             
@@ -744,7 +707,7 @@ function RootEquation(){
                         height={500}                
                         data={chartData}
                         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                        >
+                    >
 
                         <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
                         <XAxis />
@@ -787,4 +750,4 @@ function RootEquation(){
     )
 }
 
-export default RootEquation;
+export default Polation;

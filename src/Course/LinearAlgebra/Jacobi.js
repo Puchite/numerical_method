@@ -62,12 +62,12 @@ function Jacobi() {
       round++
       arrayX = JSON.parse(JSON.stringify(arrayXnew))
 
-      console.log("Before replace Array X: "+arrayX)
-      // for(let i = 0; i < arrayX.length; i++)
-      // {
-      //   arrayX[i]  =  arrayXnew[i]
-      // }
-      console.log("After replace Array X: "+arrayX)
+      // console.log("Before replace Array X: "+arrayX)
+      // // for(let i = 0; i < arrayX.length; i++)
+      // // {
+      // //   arrayX[i]  =  arrayXnew[i]
+      // // }
+      // console.log("After replace Array X: "+arrayX)
       
       for(let i = 0; i < arrayError.length; i++)
       {
@@ -76,6 +76,7 @@ function Jacobi() {
           check++
         }
       }
+      console.log(arrayError.length)
 
       if(check===arrayError.length)
       {
