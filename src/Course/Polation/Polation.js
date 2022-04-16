@@ -138,8 +138,8 @@ function Polation(){
 
 
     const getData = async () => {
-        
-        await axios.get('http://localhost:3001/polation')
+        // await axios.get('http://localhost:3001/polation')
+        await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/polation')
                                    .then((res) =>{
                                         console.log('fetch success data is', res.data)
                                         const response = res.data

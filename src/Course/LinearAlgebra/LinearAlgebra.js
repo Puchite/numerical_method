@@ -90,8 +90,8 @@ function LinearAlgebra() {
 
 
     const getData = async () => {
-
-        await axios.get('http://localhost:3001/linear')
+        // await axios.get('http://localhost:3001/linear')
+        await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/linear')
             .then((res) => {
                 console.log('fetch success data is', res.data)
                 const response = res.data

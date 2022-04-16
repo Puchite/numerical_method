@@ -87,8 +87,8 @@ function RootEquation(){
     }, [equation, problem, chartData, chartAnswer])
 
     const getData = async () => {
-        
-        await axios.get('http://localhost:3001/root-equation')
+        // await axios.get('http://localhost:3001/root-equation')
+        await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
                                    .then((res) =>{
                                         console.log('fetch success data is', res.data)
                                         const response = res.data
@@ -1015,8 +1015,8 @@ function RootEquation(){
                     <label>Error</label>
 
                     <LineChart
-                        width={500}
-                        height={500}                
+                        width={1000}
+                        height={600}                
                         data={chartData}
                         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
                         >
@@ -1035,8 +1035,8 @@ function RootEquation(){
                 <div className='answer-chart'>
                     <label>Answer</label>
                     <LineChart
-                        width={500}
-                        height={500}                
+                        width={1000}
+                        height={600}                
                         data={chartAnswer}
                         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
                     >
