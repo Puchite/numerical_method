@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import './RootEquation.css'
-import functionPlot from 'function-plot'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from 'axios'
 import * as math from 'mathjs'
 import Desmos from 'desmos'
-import { Chart } from 'chart.js'
+import { DataGrid } from '@mui/x-data-grid'
 import  { MathJax, MathJaxContext } from 'better-react-mathjax'
 import {
     LineChart,
@@ -18,25 +15,11 @@ import {
     Legend,
 } from "recharts";
 
-// import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from "chart.js"
-// import { Bar, Line } from "react-chartjs-2"; 
 
 
-let e = Math.E
 let epsilon = 0.000001
-const baseUrl = 'http://localhost:3001/root-equation/'
 let elt = document.getElementById('elt')
-let calculator = Desmos.GraphingCalculator(elt);  
-
-// ChartJS.register(
-//     LineElement,
-//     CategoryScale,
-//     LinearScale,
-//     PointElement,
-//     Title,
-//     Tooltip,
-//     Legend
-// );
+let calculator = Desmos.GraphingCalculator(elt)
 
 const methodOption = [
     { value: "bisection", label: "Bisection Method"},
@@ -45,36 +28,17 @@ const methodOption = [
     { value: "newtonRaphson", label: "Newton Raphson Method"},
 ]
 
-
-const data = {
-    labels: ['A','B','C'],
-    datasets: [{ 
-        data: [1, 2, 3],
-        label: "Error",
-        borderColor: "#3e95cd",
-        fill: false
-      }
-    ]
-}
-
-const options = {
-    title: {
-      display: true,
-      text: 'World population per region (in millions)'
-    }
-}
-
 function RootEquation(){
     
     const [ left, setLeft ] = useState('-10')
     const [ right, setRight ] = useState('10')
+    const [ bound, setBound ] = useState({left:-10, right:10}) 
+    const [ table, SetTable ] = useState({"rowsTable" : [], "columnsTable" : []})
     const [ equation, setEquation ] = useState('')
     const [ answer, setAnswer ] = useState(0)
     const [ dataError, setDataError ] = useState([])
     const [ chartData, setChartData ] = useState([])
     const [ chartAnswer, setChartAnswer] = useState([])
-    const [ chartOptions, setChartOptions ] = useState([{}])
-    const [ roundset, setRoundset ] = useState([{}])
     const [ apiProblem, setapiProblem ] = useState('')
     const [ problem, setProblem] = useState('Custom')
     const [ disableInput, setDisableinput ] = useState(true)
@@ -82,12 +46,15 @@ function RootEquation(){
     const [ method, setMethod ] = useState('none')
     const [ res, setRes ] = useState([])
     const [ start, setStart ] = useState('')
+
     const isfirstRender = useRef(true)
     const equationRef = useRef(equation)
     const problemRef = useRef(problem)
     const chartDataRef = useRef(chartData)
+    const chartAnswerRef = useRef(chartAnswer)
     
     let tempAnswer;
+    let tempObj;
 
     useEffect(() => {
     
@@ -96,7 +63,13 @@ function RootEquation(){
             getData()          
             
             elt = document.getElementById('elt')   
-            calculator = Desmos.GraphingCalculator(elt);      
+            calculator = Desmos.GraphingCalculator(elt,
+                {
+                    keypad:false,
+                    settingsMenu:false,
+                    expressionsTopbar:false,
+                    expressions:true
+                });      
             calculator.setExpression({ id: 'graph2', latex: 0})
             isfirstRender.current = false
             console.log("*This is First Render")
@@ -106,12 +79,12 @@ function RootEquation(){
             equationRef.current = equation
             problemRef.current = problem 
             chartDataRef.current = chartData
+            chartAnswerRef.current = chartAnswer
         }
 
         
 
-    }, [equation, problem, chartData]);
-
+    }, [equation, problem, chartData, chartAnswer])
 
     const getData = async () => {
         
@@ -204,7 +177,7 @@ function RootEquation(){
     const handleProblem = (e) => {
 
         setProblem(e.target.value)
-       
+        
         if(e.target.value === 'Custom')
         {
             setDisableinput(false)
@@ -224,8 +197,7 @@ function RootEquation(){
 
         if(customInput === true)
         {
-            setProblem(equation)  
-               
+            setProblem(equation)                 
             callMethodCustom(method)          
             
             try {   
@@ -246,16 +218,40 @@ function RootEquation(){
             callMethod(method)
             
             try {   
-                console.log('equation:'+problem+' answer: '+answer)
-                let point = "("+tempAnswer.toFixed(6)+",0)"
-              
-                calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g,'').replace(/\)/g,'')})
-                calculator.setExpression({ id: 'graph2', latex: point})
+                
+                let point = "("+tempAnswer+",0)";
+                         
+                calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g,'').replace(/\)/g,'')});
+                calculator.setExpression({ id: 'graph2', latex: point});
 
-                console.log(dataError)
-    
+                
+                if(method === 'bisection' || method === 'falsePosition');
+                // eslint-disable-next-line no-lone-blocks
+                {
+                    
+                    // let xLeft = "x="+left;
+                    // let xRight = "x="+right;                    
+
+                    // for(let i=0; i<Object.keys(table.rowsTable).length; i++)
+                    // {
+                    //     // eslint-disable-next-line no-loop-func
+                    //     setTimeout(() => {
+                    //         console.log("iteration ",i)
+                    //         let xLeft = "x="+table.rowsTable[i].xl;
+                    //         let xRight = "x="+table.rowsTable[i].xr;
+                    //         calculator.setExpression({ id: 'left', latex: xLeft});
+                    //         calculator.setExpression({ id: 'right', latex: xRight});
+                    //         console.log("xl ",table.rowsTable[i].xl)
+                    //         console.log("xr ",table.rowsTable[i].xr)
+                            
+                    //     },i*5000)
+                    // }
+                
+                }
+   
             } catch (error) {
-                console.log("update Plot Error")
+                console.log(error)
+                console.log("update Plot Error");
             }
         }      
         
@@ -269,18 +265,51 @@ function RootEquation(){
             case 'bisection':
                 console.log('bisection')
                 console.log('equation: '+problem+' left: '+left+' right:'+right)
-                // setAnswer(calBisection(problem, left, right))
-                tempAnswer = calBisection(problem, left, right)
+                setAnswer(calBisection(problem, left, right))        
+                console.log("tempObj",tempObj)
+                tempAnswer = calBisection(problem, left, right).toFixed(6)
                 console.log("Temp answer:"+tempAnswer)
                 setAnswer(tempAnswer)
-                break
+
+                // tempObj = calculateBisection(problem, left, right, epsilon);
+                // tempAnswer = Object(tempObj)[Object.keys(tempObj).length-1].xm 
+                // setAnswer(Object(tempObj)[Object.keys(tempObj).length-1].xm);
+
+                // let dataError = [];
+                // let dataAnswer = [];
+                // for(let i=1; i<Object.keys(tempObj).length; i++)
+                // {
+                //     let tempAnswerObj = {};
+                //     tempAnswerObj = Object.assign(tempAnswerObj, {"answer":tempObj[i].xm});
+                //     dataAnswer.push(tempAnswerObj);
+
+                //     let tempErrorObj = {};
+                //     if(tempObj[i].error === Infinity)
+                //     {
+                //         tempErrorObj = Object.assign(tempErrorObj, {"error": 1});
+                //     }
+                //     else
+                //     {
+                //         tempErrorObj = Object.assign(tempErrorObj, {"error":tempObj[i].error});
+                //     }                    
+                //     dataError.push(tempErrorObj);
+                // }
+
+                // setChartAnswer(dataAnswer);
+                // setChartData(dataError);
+                
+                break;
 
             case 'falsePosition':
+                // tempObj = calculateFalsePosition(equation, left, right, epsilon)
+                // console.log(tempObj)
                 console.log('falsePosition')
                 console.log('equation: '+problem+' left: '+left+' right: '+right)
                 tempAnswer = calFalsePosition(problem, left, right)
                 console.log("Temp answer:"+tempAnswer)
                 setAnswer(tempAnswer)
+                
+
                 break
 
             case 'onePoint':
@@ -303,6 +332,8 @@ function RootEquation(){
                 console.log('No Method Found')
                 
         }     
+
+        
     }
 
     function callMethodCustom(method)
@@ -362,6 +393,7 @@ function RootEquation(){
 
     function calBisection(equation, xl, xr){
 
+        console.log("bound ",bound.left)
         xl = parseFloat(xl)
         xr = parseFloat(xr)
         let dataError = []
@@ -372,10 +404,12 @@ function RootEquation(){
         let fxm = 0
         let fxr = 0
         let round = 1
+        let objTable = []
 
         while(c>epsilon){
             
-            console.log("Iteration: ",round)
+            // console.log("Iteration: ",round) 
+            
             fxm = calFunction(equation, xm)
             fxr = calFunction(equation, xr)
     
@@ -391,48 +425,110 @@ function RootEquation(){
             c = (xm-temp)/xm
             c = Math.abs(c)
 
-            console.log("Error :" ,c)
+            // console.log("Error :" ,c)
             if(!isFinite(c) || isNaN(c))
             {
                 console.log("C is inf or NaN")
-                dataError.push({value:1})    
+                dataError.push({error:1})    
             }
             else
             {
-                dataError.push({value:c})
+                dataError.push({error:c})
             }
 
             xm = (xl+xr)/2
             dataAnswer.push({answer:xm})
 
+            objTable.push({id:round, xl:xl.toFixed(6), xr:xr.toFixed(6), xm:xm.toFixed(6), error:c.toFixed(6)})
             round = round+1
-            console.log("--------------------------")
+            // console.log("--------------------------")
         }
         
         console.log("DataError: ",dataError)
         setChartData(dataError)
         setChartAnswer(dataAnswer)
+
+        const columnsTemp = [
+            { 
+                field: 'id',
+                headerName: 'ID', 
+                width: 70,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'xl',
+                headerName: 'Left',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'xr',
+                headerName: 'Right',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'xm',
+                headerName: 'XM',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'error',
+                headerName: 'Error',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            }
+          ];
+
+        let test = Object.keys(objTable)[Object.keys(objTable).pop()]
+        console.log("test is ",test)
+        console.log("obj is ",objTable[test].xm)
+        console.log("Last Object ",Object.keys(objTable)[Object.keys(objTable).length-1])
+        SetTable(
+            {
+                columnsTable:columnsTemp, 
+                rowsTable:objTable
+            }
+        )
+
+
         return xm
     
     }
     
     function calFalsePosition(equation, xl, xr){
 
+        xl = parseFloat(xl)
+        xr = parseFloat(xr)
         let dataError = []
         let dataAnswer = []
         let x1 = 0
         let c = 1
         let temp = 0
-    
+        let objTable = []
+        let round = 1
+
         while(c>epsilon){
     
+            console.log("Iteration ",round)
             let fx1 = calFunction(equation, x1)
             let fxl = calFunction(equation, xl)
             let fxr = calFunction(equation, xr)
     
             x1 = ((xl*fxr)-(xr*fxl))/(fxr-fxl)
             dataAnswer.push({answer:x1})
-
+            
             if (fx1*fxr > 0){
                 temp = xr
                 xr = x1
@@ -448,17 +544,72 @@ function RootEquation(){
             if(!isFinite(c) || isNaN(c))
             {
                 console.log("C is inf or NaN")
-                dataError.push({value:1})    
+                dataError.push({error:1})    
             }
             else
             {
-                dataError.push({value:c})
+                dataError.push({error:c})
             }
+
+            // objTable.push({id:round, xl:xl.toFixed(6), xr:xr.toFixed(6), x:x1.toFixed(6), error:c.toFixed(6)})
+            objTable.push({id:round, xl:xl.toFixed(6), xr:xr.toFixed(6), x:x1.toFixed(6), error:c.toFixed(6)})
+            round = round+1
         }
         
         console.log("DataError: ",dataError)
         setChartData(dataError)
         setChartAnswer(dataAnswer)
+
+        const columnsTemp = [
+            { 
+                field: 'id',
+                headerName: 'ID', 
+                width: 70,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'xl',
+                headerName: 'Left',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'xr',
+                headerName: 'Right',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'x',
+                headerName: 'X',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'error',
+                headerName: 'Error',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            }
+          ];
+
+
+        SetTable(
+            {
+                columnsTable:columnsTemp, 
+                rowsTable:objTable
+            }
+        )
 
         return x1
     
@@ -471,6 +622,9 @@ function RootEquation(){
         let x_old = parseFloat(start)
         let x_new = 0
         let c = 1
+        let objTable = []
+        let round = 1
+
         while(c>epsilon){  
           
             x_new = calFunction(equation,x_old)
@@ -481,32 +635,82 @@ function RootEquation(){
 
             if(!isFinite(c) || isNaN(c))
             {
-                console.log("C is inf or NaN")
-                dataError.push({value:1})    
+                c = 1
+                dataError.push({error:1})    
             }
             else
             {
-                dataError.push({value:c})
+                dataError.push({error:c})
             }
 
             if(c === Infinity){
 
-              console.log('Infinity')
-              setChartData(dataError)
-              setChartAnswer(dataAnswer)
-
-              return x_old
+                console.log('Infinity')
+                //   setChartData(dataError)
+                //   setChartAnswer(dataAnswer)
+                
+                //   return x_old
+                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+                break
             }
       
-            else{
-              x_old = x_new
+            else
+            {                
+                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+                x_old = x_new                
             }
-            
+
+            round = round+1
+                        
         }
         
         console.log("DataError: ",dataError)
         setChartData(dataError)
         setChartAnswer(dataAnswer)
+
+        const columnsTemp = [
+            { 
+                field: 'id',
+                headerName: 'ID', 
+                width: 70,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'x_new',
+                headerName: 'X New',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'x_old',
+                headerName: 'X Old',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'error',
+                headerName: 'Error',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            }
+          ];
+
+        
+        console.log(objTable)
+        SetTable(
+            {
+                columnsTable:columnsTemp, 
+                rowsTable:objTable
+            }
+        )
 
         return x_new
       
@@ -520,7 +724,9 @@ function RootEquation(){
         let x_old = parseFloat(start)
         let x_new = 0
         let c = 1
-      
+        let round = 1
+        let objTable = []
+
         while(c>epsilon){  
       
             x_temp = -calFunction(equation, x_old)/calFunction(math.derivative(equation, 'x').toString(), x_old)
@@ -535,28 +741,77 @@ function RootEquation(){
             if(!isFinite(c) || isNaN(c))
             {
                 console.log("C is inf or NaN")
-                dataError.push({value:1})    
+                c = 1
+                dataError.push({error:1})    
             }
             else
             {
-                dataError.push({value:c})
+                dataError.push({error:c})
             }
 
             if(c === Infinity || isNaN(c)){
 
-                setDataError(dataError)
-                setChartAnswer(dataAnswer)
-                return x_old
+                // setDataError(dataError)
+                // setChartAnswer(dataAnswer)
+                // return x_old
+                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+                break
             }      
             else{
-              x_old = x_new
+                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+                x_old = x_new
             }
             
+            round = round+1
         }
         
         setChartData(dataError)
         console.log("***Data Error is: ", dataError)
         setChartAnswer(dataAnswer)
+
+        const columnsTemp = [
+            { 
+                field: 'id',
+                headerName: 'ID', 
+                width: 70,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'x_new',
+                headerName: 'X New',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'x_old',
+                headerName: 'X Old',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            },
+            {
+                field: 'error',
+                headerName: 'Error',
+                width: 150,
+                type: 'number',
+                editable: false,
+                sortable: false,
+            }
+          ];
+
+        
+        console.log(objTable)
+        SetTable(
+            {
+                columnsTable:columnsTemp, 
+                rowsTable:objTable
+            }
+        )
 
         return x_new
       
@@ -578,6 +833,23 @@ function RootEquation(){
           return <MathJax dynamic>{e.toString}</MathJax>;
         }
     };
+
+    const showTable = (table) => {
+
+
+        try {
+            return <DataGrid
+                        rows={table.rowsTable}
+                        columns={table.columnsTable}
+                        pageSize={100}
+                        rowsPerPageOptions={[100]}
+                    />
+            
+        } catch (e) {
+            console.log(e)
+        }
+        
+    }
 
     return (
             
@@ -634,7 +906,7 @@ function RootEquation(){
                             <input 
                                 type="text" 
                                 onChange={handleLeftInput}
-                                placeholder='Left'    
+                                placeholder='Default is -10'    
                             />                            
                         </div>
                         
@@ -642,12 +914,15 @@ function RootEquation(){
                             <label>Right:</label> 
                             <input 
                                 type="text"   
-                                onChange={handleRightInput}  
-                                placeholder="Right"
+                                onChange={handleRightInput} 
+                                placeholder="Default is 10"
                             />
                         </div>
 
-                        <input type="submit" value="Submit" />
+                        <div className='button'>
+                            <input type="submit" value="Submit" />
+                        </div>
+                        
 
                     </div>
                 
@@ -751,7 +1026,7 @@ function RootEquation(){
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        <Line type="monotone" dataKey="value" stroke="#F1230A" strokeWidth={5} />
+                        <Line type="monotone" dataKey="error" stroke="#F1230A" strokeWidth={5} />
                     </LineChart>
 
                 </div>
@@ -776,6 +1051,15 @@ function RootEquation(){
                 </div>
             
             </div>
+            
+
+            <div className='content' style={{textAlign: 'center'}}>
+  
+                <div style={{ height: 400, width: '100%' }}>
+                    {showTable(table)}
+                </div>
+               
+            </div> 
 
             {/* <SyntaxHighlighter className="code" language="javascript" style={xonokai} showLineNumbers='true' >
                 {codeString+codeString2}

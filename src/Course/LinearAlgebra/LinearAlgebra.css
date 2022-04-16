@@ -1,11 +1,38 @@
+.input-div{
+    display: contents;
+    text-align: center;
+    justify-content: center;
+}
+
+.input-div-sizeMatrix{
+    display: contents;
+    text-align: center;
+    justify-content: center;
+}
 
 .input-matrix{
     display: flex;    
+    text-align: center;
     justify-content: center;
     padding: 5px;
 }
 
 .input-matrixA, .input-matrixB{
+    text-align: center;
     padding: 1rem;
 }
 
+.button-div{
+    display: contents;
+    justify-content: center;
+    text-align: center;
+    padding: 5px;
+}
+
+.button-clear, .button-submit{
+    padding: 5px;
+}
+
+.chart{
+    display: contents;
+}

@@ -40,27 +40,9 @@ let calculator = Desmos.GraphingCalculator(elt);
 // );
 
 const methodOption = [
-    { value: "newtonDivide", label: "Newton's Divided-Differences"},
+    { value: "newtonDivide", label: "Newton's Divided-Differences Method"},
+    { value: "lagrange", label: "Lagrange Interpolation Method"},
 ]
-
-
-const data = {
-    labels: ['A','B','C'],
-    datasets: [{ 
-        data: [1, 2, 3],
-        label: "Error",
-        borderColor: "#3e95cd",
-        fill: false
-      }
-    ]
-}
-
-const options = {
-    title: {
-      display: true,
-      text: 'World population per region (in millions)'
-    }
-}
 
 const columnsTable = [
     { 
@@ -193,8 +175,8 @@ function Polation(){
                 setapiProblem(res.newtonDivide)
                 break
             
-            case '1':
-                setapiProblem(res.falsePosition)
+            case 'lagrange':
+                setapiProblem(res.lagrange)
                 break
             
             case '2':
@@ -289,32 +271,18 @@ function Polation(){
         switch(method)
         {
             case 'newtonDivide':
-                calnewtonDivide(x, y)
+                tempAnswer = calnewtonDivide(x, y)
                 setAnswer(tempAnswer)
                 break
 
-            case 'falsePosition':
-                console.log('falsePosition')
-                console.log('equation: '+problem+' left: '+left+' right: '+right)
-                tempAnswer = calFalsePosition(problem, left, right)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case 'lagrange':
+                calLagrange(x, y)
                 break
 
-            case 'onePoint':
-                console.log('onePoint')
-                console.log('equation: '+problem+' start: '+start)
-                tempAnswer = calOnePoint(problem, start)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case '1':
                 break
             
-            case 'newtonRaphson':
-                console.log('newtonRaphson')
-                console.log('equation: '+problem+' start: '+start)
-                tempAnswer = calNewton(problem, start)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case '2':
                 break
 
             default:
@@ -327,37 +295,16 @@ function Polation(){
     {
         switch(method)
         {
-            case 'bisection':
-                console.log('bisection')
-                console.log('equation: '+equation+' left: '+left+' right:'+right)
-                // setAnswer(calBisection(problem, left, right))
-                tempAnswer = calBisection(equation, left, right)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case '1':
                 break
 
-            case 'falsePosition':
-                console.log('falsePosition')
-                console.log('equation: '+equation+' left: '+left+' right: '+right)
-                tempAnswer = calFalsePosition(equation, left, right)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case '2':
                 break
 
-            case 'onePoint':
-                console.log('onePoint')
-                console.log('equation: '+equation+' start: '+start)
-                tempAnswer = calOnePoint(equation, start)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case '3':
                 break
             
-            case 'newtonRaphson':
-                console.log('newtonRaphson')
-                console.log('equation: '+equation+' start: '+start)
-                tempAnswer = calNewton(equation, start)
-                console.log("Temp answer:"+tempAnswer)
-                setAnswer(tempAnswer)
+            case '4':
                 break
 
             default:
@@ -366,17 +313,6 @@ function Polation(){
         }     
     }
 
-    function calFunction(equation, xq){
-        
-        try {
-            let eq = math.parse(equation)
-            return eq.evaluate({x:xq})
-        } catch (error) {
-            console.log(error)
-            console.log("Equation Error")
-        }
-        
-    }
 
     function calnewtonDivide(x, y){
         
@@ -397,224 +333,37 @@ function Polation(){
         }
     }
 
-    function calBisection(equation, xl, xr){
+    function calLagrange(x, y){
+        let xx = 250
+        let round = x.length
+        let l = 0
+        console.log("x is: ",x)
 
-        xl = parseFloat(xl)
-        xr = parseFloat(xr)
-        let dataError = []
-        let dataAnswer = []
-        let xm = ((xl+xr)/2) 
-        let c = 1
-        let temp = 0
-        let fxm = 0
-        let fxr = 0
-        let round = 1
-
-        while(c>epsilon){
-            
-            console.log("Iteration: ",round)
-            fxm = calFunction(equation, xm)
-            fxr = calFunction(equation, xr)
-    
-            if (fxm*fxr > 0){
-                temp = xr
-                xr = xm
-            }
-            else{
-                temp = xl
-                xl = xm
-            }
-            
-            c = (xm-temp)/xm
-            c = Math.abs(c)
-
-            console.log("Error :" ,c)
-            if(!isFinite(c) || isNaN(c))
+        for(let i = 0; i<round; i++)
+        {
+            let l_top = 1
+            let l_divider = 1
+            for(let j = 0; j<round; j++)
             {
-                console.log("C is inf or NaN")
-                dataError.push({value:1})    
+                if(j!==i)
+                {
+                    // console.log("x",j," ",x[j],"-",xx)
+                    l_top *= (x[j]-xx)
+                    // console.log("l_top: ",l_top)
+                    l_divider *= (x[j]-x[i])
+                    // console.log("x",j," ","-",x[i])
+                    // console.log("l_divider: ",l_divider)
+                }
             }
-            else
-            {
-                dataError.push({value:c})
-            }
-
-            xm = (xl+xr)/2
-            dataAnswer.push({answer:xm})
-
-            round = round+1
-            console.log("--------------------------")
+            // console.log(l_top,"/",l_divider,"*",y[i])
+            l += (l_top/l_divider)*y[i]
+            // console.log("l",[i],": ",l)
+            // console.log("***************")
         }
-        
-        console.log("DataError: ",dataError)
-        setChartData(dataError)
-        setChartAnswer(dataAnswer)
-        return xm
-    
+
+        // console.log(l)
+        setAnswer(l)
     }
-    
-    function calFalsePosition(equation, xl, xr){
-
-        let dataError = []
-        let dataAnswer = []
-        let x1 = 0
-        let c = 1
-        let temp = 0
-    
-        while(c>epsilon){
-    
-            let fx1 = calFunction(equation, x1)
-            let fxl = calFunction(equation, xl)
-            let fxr = calFunction(equation, xr)
-    
-            x1 = ((xl*fxr)-(xr*fxl))/(fxr-fxl)
-            dataAnswer.push({answer:x1})
-
-            if (fx1*fxr > 0){
-                temp = xr
-                xr = x1
-            }
-            else{
-                temp = xl
-                xl = x1
-            }
-    
-            c = (x1-temp)/x1
-            c = Math.abs(c)     
-            
-            if(!isFinite(c) || isNaN(c))
-            {
-                console.log("C is inf or NaN")
-                dataError.push({value:1})    
-            }
-            else
-            {
-                dataError.push({value:c})
-            }
-        }
-        
-        console.log("DataError: ",dataError)
-        setChartData(dataError)
-        setChartAnswer(dataAnswer)
-
-        return x1
-    
-    }
-
-    function calOnePoint(equation, start){
-
-        let dataError = []
-        let dataAnswer = []
-        let x_old = parseFloat(start)
-        let x_new = 0
-        let c = 1
-        while(c>epsilon){  
-          
-            x_new = calFunction(equation,x_old)
-
-            dataAnswer.push({answer:x_new})
-
-            c = Math.abs((x_new-x_old)/x_new)
-
-            if(!isFinite(c) || isNaN(c))
-            {
-                console.log("C is inf or NaN")
-                dataError.push({value:1})    
-            }
-            else
-            {
-                dataError.push({value:c})
-            }
-
-            if(c === Infinity){
-
-              console.log('Infinity')
-              setChartData(dataError)
-              setChartAnswer(dataAnswer)
-
-              return x_old
-            }
-      
-            else{
-              x_old = x_new
-            }
-            
-        }
-        
-        console.log("DataError: ",dataError)
-        setChartData(dataError)
-        setChartAnswer(dataAnswer)
-
-        return x_new
-      
-    }
-
-    function calNewton(equation, start){
-
-        let dataError = []
-        let dataAnswer = []
-        let x_temp = 0
-        let x_old = parseFloat(start)
-        let x_new = 0
-        let c = 1
-      
-        while(c>epsilon){  
-      
-            x_temp = -calFunction(equation, x_old)/calFunction(math.derivative(equation, 'x').toString(), x_old)
-            console.log("Delta X: "+x_temp)
-            x_new = x_old + x_temp
-            console.log("X_new: "+x_new)
-            dataAnswer.push({answer:x_new})
-
-            c = Math.abs((x_new-x_old)/x_new)
-            console.log("Error: "+c)
-
-            if(!isFinite(c) || isNaN(c))
-            {
-                console.log("C is inf or NaN")
-                dataError.push({value:1})    
-            }
-            else
-            {
-                dataError.push({value:c})
-            }
-
-            if(c === Infinity || isNaN(c)){
-
-                setDataError(dataError)
-                setChartAnswer(dataAnswer)
-                return x_old
-            }      
-            else{
-              x_old = x_new
-            }
-            
-        }
-        
-        setChartData(dataError)
-        console.log("***Data Error is: ", dataError)
-        setChartAnswer(dataAnswer)
-
-        return x_new
-      
-    }
-
-    const showProblem = (matrix) => {
-        try {
-          return (
-                <MathJax dynamic>
-                  {"\\(" +
-                    math.parse(matrix.toString().replace(/\r/g, "")).toTex({
-                      parenthesis: "keep",
-                      implicit: "show",
-                    }) +
-                  "\\)"}
-                </MathJax>
-          );
-        } catch (e) {
-          return <MathJax dynamic>{e.toString}</MathJax>;
-        }
-    };
 
     return (
             
@@ -650,14 +399,11 @@ function Polation(){
             {/* <div> Problem is : {problem} </div> */}
 
             <form className='form' onSubmit={handleSubmit}>
-
-                {
-                    method !== 'onePoint' & method !== 'newtonRaphson'  & method !== 'none' &&
-                                        
+                                      
                     <div className='input-div'>
                         
                         <div className='equation-input-div'>
-                            <label>Equation:</label>
+                            <label>X::</label>
                             <input 
                                 type="text" 
                                 onChange={handleEquationInput} 
@@ -669,10 +415,7 @@ function Polation(){
                         <input type="submit" value="Submit" />
 
                     </div>
-                
-                }
 
-                
             </form>
 
             <br/>
@@ -684,8 +427,12 @@ function Polation(){
                         <DataGrid
                             rows={rowTable}
                             columns={columnsTable}
-                            pageSize={5}
-                            rowsPerPageOptions={[5]}
+                            pageSize={10}
+                            rowsPerPageOptions={[10]}
+                            checkboxSelection
+                            onSelectionModelChange={(newSelection) => {
+                                  
+                            }}
                         />
                     </div>
                 </div>
@@ -696,7 +443,7 @@ function Polation(){
                 
             </div>                        
             
-            <div className='chart'>
+            {/* <div className='chart'>
             
                 
                 <div className='error-chart'>
@@ -738,7 +485,7 @@ function Polation(){
 
                 </div>
             
-            </div>
+            </div> */}
 
             {/* <SyntaxHighlighter className="code" language="javascript" style={xonokai} showLineNumbers='true' >
                 {codeString+codeString2}

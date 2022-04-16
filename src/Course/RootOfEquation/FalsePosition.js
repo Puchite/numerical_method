@@ -1,30 +1,70 @@
-import React from 'react'
-import { MathComponent } from 'mathjax-react'
-import functionPlot from 'function-plot'
+import calFunction from "./CalculateFuntion"
 
-let a = 0.02
-let b = 0.03
-let e = 0.000001
+function calculateFalsePosition(equation, xl, xr, epsilon){
 
-
-function calFunction(x){
-    return ((43*x)-1)
-}
-
-function calFalsePosition(xl, xr){
-
+    let dataError = []
+    let dataAnswer = []
     let x1 = 0
     let c = 1
     let temp = 0
+    let objTable = []
+    let round = 1
 
-    while(c>e){
+    const columnsTemp = [
+        { 
+            field: 'id',
+            headerName: 'ID', 
+            width: 70,
+            type: 'number',
+            editable: false,
+            sortable: false,
+        },
+        {
+            field: 'xl',
+            headerName: 'Left',
+            width: 150,
+            type: 'number',
+            editable: false,
+            sortable: false,
+        },
+        {
+            field: 'xr',
+            headerName: 'Right',
+            width: 150,
+            type: 'number',
+            editable: false,
+            sortable: false,
+        },
+        {
+            field: 'x',
+            headerName: 'X',
+            width: 150,
+            type: 'number',
+            editable: false,
+            sortable: false,
+        },
+        {
+            field: 'error',
+            headerName: 'Error',
+            width: 150,
+            type: 'number',
+            editable: false,
+            sortable: false,
+        }
+      ];
+    
+    objTable.push(columnsTemp);
 
-        let fx1 = calFunction(x1)
-        let fxl = calFunction(xl)
-        let fxr = calFunction(xr)
+    while(c>epsilon){
+
+        console.log("Iteration ",round)
+        let fx1 = calFunction(equation, x1)
+        let fxl = calFunction(equation, xl)
+        let fxr = calFunction(equation, xr)
 
         x1 = ((xl*fxr)-(xr*fxl))/(fxr-fxl)
-
+        dataAnswer.push({answer:x1})
+        
         if (fx1*fxr > 0){
             temp = xr
             xr = x1
@@ -35,43 +75,25 @@ function calFalsePosition(xl, xr){
         }
 
         c = (x1-temp)/x1
-        c = Math.abs(c) 
-        console.log(c)      
+        c = Math.abs(c)     
         
+        if(!isFinite(c) || isNaN(c))
+        {
+            console.log("C is inf or NaN")
+            dataError.push({value:1})    
+        }
+        else
+        {
+            dataError.push({value:c})
+        }
+
+        objTable.push({id:round, xl:xl, xr:xr, x:x1, error:c})
+        round = round+1
     }
 
-    return x1
+    console.log(objTable)
+    return objTable;
 
 }
 
-function FalsePosition() {
-
-    return (
-
-        <div className='entire_page'>
-            
-            <div className='super_header'>
-
-                <h1>
-                    This is False Position Method
-                </h1>
-
-                <h3> Problem : <MathComponent tex={String.raw`43x-1`}/> Left : 0.02 Right : 0.03 </h3>
-                <br/>
-                
-                <p>answer is {calFalsePosition(a,b).toFixed(6)}</p>
-                
-                
-                                
-                
-            </div>
-            
-      
-
-
-        </div>
-    )
-
-}
-
-export default FalsePosition
+export default calculateFalsePosition;
