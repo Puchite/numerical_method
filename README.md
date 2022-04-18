@@ -1,4 +1,4 @@
-DEMO https://puchite.github.io/numerical_method/
+# DEMO https://puchite.github.io/numerical_method/
 
 # Getting Started with Create React App
 
