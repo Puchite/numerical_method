@@ -15,11 +15,10 @@ import {
     Legend,
 } from "recharts";
 
-
-
 let epsilon = 0.000001
 let elt = document.getElementById('elt')
 let calculator = Desmos.GraphingCalculator(elt)
+let token;
 
 const methodOption = [
     { value: "bisection", label: "Bisection Method"},
@@ -28,11 +27,23 @@ const methodOption = [
     { value: "newtonRaphson", label: "Newton Raphson Method"},
 ]
 
+const login = async () =>  {
+    await axios.post('http://localhost:3001/login',{
+      email: "s6204062616316@email.kmutnb.ac.th",
+      password: "0859150757"
+    }).then((res) => {
+      token= res.data
+      console.log("Token is ",token)
+    })
+  }
+
+
 function RootEquation(){
     
     const [ left, setLeft ] = useState('-10')
     const [ right, setRight ] = useState('10')
-    const [ bound, setBound ] = useState({left:-10, right:10}) 
+    const [ start, setStart ] = useState(0)
+    const [ bound, setBound ] = useState({left:0, right:10}) 
     const [ table, SetTable ] = useState({"rowsTable" : [], "columnsTable" : []})
     const [ equation, setEquation ] = useState('')
     const [ answer, setAnswer ] = useState(0)
@@ -45,30 +56,64 @@ function RootEquation(){
     const [ customInput, setCustominput ] = useState(false)
     const [ method, setMethod ] = useState('none')
     const [ res, setRes ] = useState([])
-    const [ start, setStart ] = useState('')
+    // const [ token, setToken ] = useState([])
+    
 
     const isfirstRender = useRef(true)
     const equationRef = useRef(equation)
     const problemRef = useRef(problem)
     const chartDataRef = useRef(chartData)
     const chartAnswerRef = useRef(chartAnswer)
-    
+
     let tempAnswer;
     let tempObj;
 
+      
     useEffect(() => {
-    
+        
+        // const login = async () =>  {
+        //     await axios.post('http://localhost:3001/login',{
+        //       email: "s6204062616316@email.kmutnb.ac.th",
+        //       password: "0859150757"
+        //     }).then((res) => {
+        //       const response = res.data
+        //       setToken(response)
+        //       console.log("Token is ",token)
+        //     })
+        //   }
+          
+        // console.log(res)
+        // const getData = async () => {
+        //     // await axios.get('http://localhost:3001/root-equation')
+        //     await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
+        //                                .then((res) =>{
+        //                                     console.log('fetch success data is', res.data)
+        //                                     const response = res.data
+        //                                     setRes(response)
+                                            
+        //                                 }, (error) => {
+        //                                     console.log(error)})
+        //     console.log("ACCESS TOKEN ",token)
+        //     await axios.get('http://localhost:3001/root-equation', {
+        //         headers:{
+        //             "Authorization" : `Bearer ${token.accessToken}`
+        //         }
+        //     }).then((response) =>{
+        //         console.log("get with token data is ",response.data)
+        //     })
+        // }
+
         if(isfirstRender.current)
         {
-            getData()          
-            
+            login();
+            getData();
             elt = document.getElementById('elt')   
             calculator = Desmos.GraphingCalculator(elt,
                 {
                     keypad:false,
                     settingsMenu:false,
                     expressionsTopbar:false,
-                    expressions:true
+                    expressions:false
                 });      
             calculator.setExpression({ id: 'graph2', latex: 0})
             isfirstRender.current = false
@@ -82,9 +127,18 @@ function RootEquation(){
             chartAnswerRef.current = chartAnswer
         }
 
-        
-
     }, [equation, problem, chartData, chartAnswer])
+
+    // const login = async () =>  {
+    //     await axios.post('http://localhost:3001/login',{
+    //       email: "s6204062616316@email.kmutnb.ac.th",
+    //       password: "0859150757"
+    //     }).then((res) => {
+    //       const response = res.data
+    //       setToken(response)
+    //       console.log("Token is ",token)
+    //     })
+    //   }
 
     const getData = async () => {
         // await axios.get('http://localhost:3001/root-equation')
@@ -96,7 +150,15 @@ function RootEquation(){
                                         
                                     }, (error) => {
                                         console.log(error)})
-        
+                                        
+        console.log("ACCESS TOKEN ",token)
+        await axios.get('http://localhost:3001/root-equation', {
+            headers:{
+                "Authorization" : `Bearer ${token.accessToken}`
+            }
+        }).then((response) =>{
+            console.log("get with token data is ",response.data)
+        })
     }
 
     const handleLeftInput = (e) => {
@@ -144,7 +206,7 @@ function RootEquation(){
         else
         {
             setMethod(e.target.value)
-            setProblem('Custom')
+            setProblem('')
         }
 
         switch (e.target.value)
@@ -220,9 +282,12 @@ function RootEquation(){
             try {   
                 
                 let point = "("+tempAnswer+",0)";
-                         
+                let xLeft = "x="+left;
+                let xRight = "x="+right;  
                 calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g,'').replace(/\)/g,'')});
-                calculator.setExpression({ id: 'graph2', latex: point});
+                calculator.setExpression({ id: 'graph2', latex: point} );
+                calculator.setExpression({ id: 'graph3', latex: xLeft});
+                calculator.setExpression({ id: 'graph4', latex: xRight});
 
                 
                 if(method === 'bisection' || method === 'falsePosition');
@@ -250,7 +315,6 @@ function RootEquation(){
                 }
    
             } catch (error) {
-                console.log(error)
                 console.log("update Plot Error");
             }
         }      
@@ -385,7 +449,6 @@ function RootEquation(){
             let eq = math.parse(equation)
             return eq.evaluate({x:xq})
         } catch (error) {
-            console.log(error)
             console.log("Equation Error")
         }
         
@@ -429,6 +492,7 @@ function RootEquation(){
             if(!isFinite(c) || isNaN(c))
             {
                 console.log("C is inf or NaN")
+                c = 1;
                 dataError.push({error:1})    
             }
             else
@@ -451,7 +515,7 @@ function RootEquation(){
         const columnsTemp = [
             { 
                 field: 'id',
-                headerName: 'ID', 
+                headerName: 'Iteration', 
                 width: 70,
                 type: 'number',
                 editable: false,
@@ -519,7 +583,7 @@ function RootEquation(){
         let objTable = []
         let round = 1
 
-        while(c>epsilon){
+        while(round<100){
     
             console.log("Iteration ",round)
             let fx1 = calFunction(equation, x1)
@@ -544,6 +608,7 @@ function RootEquation(){
             if(!isFinite(c) || isNaN(c))
             {
                 console.log("C is inf or NaN")
+                c = 1
                 dataError.push({error:1})    
             }
             else
@@ -625,7 +690,7 @@ function RootEquation(){
         let objTable = []
         let round = 1
 
-        while(c>epsilon){  
+        while(round < 100){  
           
             x_new = calFunction(equation,x_old)
 
@@ -643,22 +708,29 @@ function RootEquation(){
                 dataError.push({error:c})
             }
 
-            if(c === Infinity){
+            objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            x_old = x_new
 
-                console.log('Infinity')
-                //   setChartData(dataError)
-                //   setChartAnswer(dataAnswer)
+            if(c<epsilon)
+            {
+                break;
+            }
+            // if(c === Infinity){
+
+            //     console.log('Infinity')
+            //     //   setChartData(dataError)
+            //     //   setChartAnswer(dataAnswer)
                 
-                //   return x_old
-                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
-                break
-            }
+            //     //   return x_old
+            //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            //     break
+            // }
       
-            else
-            {                
-                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
-                x_old = x_new                
-            }
+            // else
+            // {                
+            //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            //     x_old = x_new                
+            // }
 
             round = round+1
                         
@@ -727,8 +799,9 @@ function RootEquation(){
         let round = 1
         let objTable = []
 
-        while(c>epsilon){  
-      
+        while(round < 100){  
+            
+            console.log("Iteration: ",round)
             x_temp = -calFunction(equation, x_old)/calFunction(math.derivative(equation, 'x').toString(), x_old)
             console.log("Delta X: "+x_temp)
             x_new = x_old + x_temp
@@ -749,18 +822,25 @@ function RootEquation(){
                 dataError.push({error:c})
             }
 
-            if(c === Infinity || isNaN(c)){
+            objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            x_old = x_new
 
-                // setDataError(dataError)
-                // setChartAnswer(dataAnswer)
-                // return x_old
-                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
-                break
-            }      
-            else{
-                objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
-                x_old = x_new
+            if(c<epsilon)
+            {
+                break;
             }
+            // if(c === Infinity || isNaN(c)){
+
+            //     // setDataError(dataError)
+            //     // setChartAnswer(dataAnswer)
+            //     // return x_old
+            //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            //     return x_old
+            // }      
+            // else{
+            //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            //     x_old = x_new
+            // }
             
             round = round+1
         }
@@ -835,8 +915,6 @@ function RootEquation(){
     };
 
     const showTable = (table) => {
-
-
         try {
             return <DataGrid
                         rows={table.rowsTable}
@@ -851,6 +929,24 @@ function RootEquation(){
         
     }
 
+    const proveAnswer = (answer) => {
+        try {
+            if(method === 'onePoint')
+            {
+                let prove = ((calFunction(problem, answer))-answer).toFixed(6)
+                return prove     
+            }
+            else
+            {
+                let prove = calFunction(problem, answer).toFixed(6)
+                return prove     
+            }
+            
+        } catch (error) {
+            return "[Equation Error]"
+        }
+        
+    }
     return (
             
         <div className='entire_page'>
@@ -873,7 +969,7 @@ function RootEquation(){
 
                 <label>Problem:</label>
                 <select onChange={handleProblem}>
-                    <option value="none" >Select Equation</option>
+                    <option defaultValue={null} value="none" >Select Equation</option>
                     <option value="Custom">Custom</option>
                     {apiProblem ? apiProblem.map(item => <option key={item.problem} >{item.problem}</option>):null}
                     
@@ -949,11 +1045,13 @@ function RootEquation(){
                                 // value={left} 
                                 onChange={handleStartInput}
                                 // disabled={disableInput} 
-                                placeholder='Start'    
+                                placeholder='Default is 0'    
                             />
                         </div>
 
-                        <input type="submit" value="Submit" />
+                        <div className='button'>
+                            <input type="submit" value="Submit" />
+                        </div>
 
                     </div>
                 
@@ -998,13 +1096,13 @@ function RootEquation(){
                 <div className='answer-div'>
                     <h2> answer is  {answer} </h2>
                 </div>
-                
+                <div className='prove'>
+                    <h2> Prove Answer is {proveAnswer(answer)}</h2>
+                </div>    
             </div>
             
             <div className='plot-div'>
-                <div className='plot' id='elt' style={{width: '600px', 
-                                      height: '400px',}}> 
-                </div>
+                <div className='plot' id='elt' style={{width: '800px', height: '600px',}}> </div>
             </div>
             
             
@@ -1053,11 +1151,14 @@ function RootEquation(){
             </div>
             
 
-            <div className='content' style={{textAlign: 'center'}}>
-  
-                <div style={{ height: 400, width: '100%' }}>
-                    {showTable(table)}
+            <div className='table' style={{textAlign: 'center'}}>
+                
+                <div className='table-iteration'>
+                    <div style={{ height: 1000, width: 1000 }}>
+                        {showTable(table)}
+                    </div>
                 </div>
+                
                
             </div> 
 

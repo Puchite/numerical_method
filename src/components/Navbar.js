@@ -13,7 +13,20 @@ function Navbar() {
 
   return (
     <>
-      <IconContext.Provider value={{ color: '#fff' }}>
+      <div className='navbar'>
+        {SidebarData.map((item, index) => {
+          return (
+            <li key={index} className={item.cName}>
+              <Link to={item.path}>
+                {item.icon}
+                <span>{item.title}</span>
+              </Link>
+            </li>
+          );
+        })}
+
+      </div>
+      {/* <IconContext.Provider value={{ color: '#fff' }}>
         <div className='navbar'>
           <Link to='#' className='menu-bars'>
             <FaIcons.FaBars onClick={showSidebar} />
@@ -38,7 +51,7 @@ function Navbar() {
             })}
           </ul>
         </nav>
-      </IconContext.Provider>
+      </IconContext.Provider> */}
     </>
   );
 }

@@ -1,17 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Link} from 'react-router-dom'
 import './Course.css'
+import axios from 'axios'
 
 function Course() {
     return (
 
         <div className='entire_page'>
             
-            <div className='super_header'>
+            {/* <div className='super_header'>
                     <h1 className='course_header'>
                         Course
                     </h1>
-            </div>
+            </div> */}
 
             <div className='row-course'>
                 

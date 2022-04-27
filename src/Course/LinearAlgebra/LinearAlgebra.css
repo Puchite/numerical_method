@@ -17,9 +17,15 @@
     padding: 5px;
 }
 
-.input-matrixA, .input-matrixB{
+.content{
+    display: flex;
+    justify-content: center;
+}
+
+.input-matrixA, .input-matrixB, .answer-div, .prove-answer{
+    justify-content: center;
     text-align: center;
-    padding: 1rem;
+    padding: 10px;
 }
 
 .button-div{
@@ -33,6 +39,10 @@
     padding: 5px;
 }
 
+
 .chart{
     display: contents;
+    text-align: center;
+    justify-content: center;
 }
+

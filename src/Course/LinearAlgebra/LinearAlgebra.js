@@ -6,7 +6,6 @@ import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from 'axios'
 import { parse, derivative, evaluate, json, row, column, index } from 'mathjs';
 import Desmos from 'desmos'
-import { Chart } from 'chart.js'
 import * as math from 'mathjs'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import {
@@ -22,7 +21,6 @@ import {
 let e = Math.E
 let epsilon = 0.000001
 let ep = 0.0001;
-const baseUrl = 'http://localhost:3001/root-equation/'
 let elt;
 let calculator;
 
@@ -41,6 +39,7 @@ function LinearAlgebra() {
     // const [ bound, setBound ] = useState({left:'0',right:'0'})
     const [matrixA, setMatrixA] = useState([0])
     const [matrixB, setMatrixB] = useState([0])
+    const [matrixProve, setMatrixProve] = useState([0])
     const [matrixLenght, setMatrixLength] = useState(0)
     const [matrixSize, setMatrixSize] = useState({ rows: 0, columns: 0 })
     const [chartData, setChartData] = useState([])
@@ -53,7 +52,6 @@ function LinearAlgebra() {
     const [customInput, setCustominput] = useState(false)
     const [method, setMethod] = useState('none')
     const [res, setRes] = useState([])
-    const [start, setStart] = useState('')
     const isfirstRender = useRef(true)
     const matrixARef = useRef(matrixA)
     const matrixBRef = useRef(matrixB)
@@ -67,17 +65,11 @@ function LinearAlgebra() {
 
         if (isfirstRender.current) {
             getData()
-            elt = document.getElementById('elt')
-            calculator = Desmos.GraphingCalculator(elt, {
-                keypad: false,
-                settingsMenu: false,
-                expressionsTopbar: false
-            });
-            calculator.setExpression({ id: 'graph2', latex: 0 })
             isfirstRender.current = false
             console.log("*This is First Render")
         }
         else {
+            
             matrixARef.current = matrixA
             matrixBRef.current = matrixB
             matrixSizeRef.current = matrixSize
@@ -106,17 +98,21 @@ function LinearAlgebra() {
 
     const handleMethod = (e) => {
 
+        setAnswer([0])
+        setMatrixProve([0])
+        setMatrixA([0])
+        setMatrixB([0])
         console.log(e.target.value)
         if (e.target.value === 'none') {
             setMethod('none')
         }
         else {
             setMethod(e.target.value)
-            setProblem('Custom')
+            setProblem(0)
         }
 
         switch (e.target.value) {
-
+            
             case 'cramerRule':
                 setapiProblem(res.cramerRule)
                 break
@@ -202,14 +198,7 @@ function LinearAlgebra() {
         let arrayA = []
         let arrayTemp = []
 
-        if (typeof (matrixB) === 'string') {
-            console.log("string")
-            arrayTemp = JSON.parse(matrixB)
-        }
-        else {
-            console.log("other")
-            arrayTemp = JSON.parse(JSON.stringify(matrixB))
-        }
+ 
 
         if (arrayTemp.length < 2) {
             console.log("Array Temp ", arrayTemp)
@@ -241,22 +230,32 @@ function LinearAlgebra() {
 
             case 'gaussElimination':
                 calGuassElimination(matrixA, matrixB)
+                
                 break
 
             case 'gaussJordan':
                 calGuassJordan(matrixA, matrixB)
+                
                 break
 
             case 'jacobi':
+                if(checkMatrixTranspose(matrixA) === false) 
+                {
+                    setAnswer("Matrix A is non-symmetric matrix")
+                    return
+                }
                 calJacobi(matrixA, matrixB)
+                
                 break
 
             case 'gaussSeidel':
                 calGaussSeidel(matrixA, matrixB)
+                
                 break
 
             case 'conjugate':
                 calConjugate(matrixA, matrixB)
+                
                 break
 
             default:
@@ -278,20 +277,18 @@ function LinearAlgebra() {
 
         for (let column = 0; column < matrixAForm[0].length; column++) {
             let matrixTemp = JSON.parse(matrixA)
-            console.log("Matrix before replace: ", matrixTemp)
+         
             for (let row = 0; row < matrixAForm.length; row++) {
                 matrixTemp[row][column] = matrixBForm[row]
             }
-            console.log("Matrix after replace: ", matrixTemp)
-
-            console.log(math.det(math.matrix(matrixTemp)))
+            
             arrayX[column] = parseFloat(((math.det(math.matrix(matrixTemp))) / (math.det(math.matrix(matrixAForm)))).toFixed(0))
             dataError.push(arrayX[column])
         }
 
-        console.log("Data Error ", dataError)
         setMatrixLength(matrixAForm.length)
         setChartData(dataError)
+        checkAnswer(matrixA, arrayX)
         setAnswer(JSON.stringify(arrayX))
     }
 
@@ -300,10 +297,6 @@ function LinearAlgebra() {
         let matrixBForm = JSON.parse(matrixB)
         let arrayX = Array(matrixAForm.length).fill(0)
         let matrixTemp = []
-
-
-        console.log("MatrixA: " + matrixAForm)
-        console.log("MatrixB: " + matrixBForm)
 
         for (let row = 0; row < matrixAForm.length; row++) {
             let temp = []
@@ -318,8 +311,6 @@ function LinearAlgebra() {
             matrixTemp.push(temp)
         }
 
-        console.log("matrixTemp: " + matrixTemp)
-
         for (let i = 0; i < matrixTemp.length; i++) {
             for (let j = i + 1; j < matrixTemp.length; j++) {
                 let temp = matrixTemp[j][i] / matrixTemp[i][i]
@@ -329,7 +320,6 @@ function LinearAlgebra() {
                     matrixTemp[j][k] = matrixTemp[j][k] - temp * matrixTemp[i][k]
                 }
             }
-            console.log(matrixTemp)
         }
 
         for (let row = matrixTemp.length - 1; row >= 0; row--) {
@@ -340,7 +330,7 @@ function LinearAlgebra() {
             arrayX[row] = parseFloat((arrayX[row] / matrixTemp[row][row]).toFixed(0))
         }
 
-        console.log(arrayX)
+        checkAnswer(matrixA, arrayX)
         setAnswer(JSON.stringify(arrayX))
 
     }
@@ -351,9 +341,6 @@ function LinearAlgebra() {
         let arrayX = Array(matrixAForm.length).fill(0)
         let matrixTemp = []
 
-
-        console.log("MatrixA: " + matrixAForm)
-        console.log("MatrixB: " + matrixBForm)
 
         for (let row = 0; row < matrixAForm[0].length; row++) {
             let temp = []
@@ -368,8 +355,6 @@ function LinearAlgebra() {
             matrixTemp.push(temp)
         }
 
-        console.log("matrixTemp: " + matrixTemp)
-
         for (let i = 0; i < matrixTemp.length; i++) {
             for (let j = 0; j < matrixTemp.length; j++) {
 
@@ -380,7 +365,6 @@ function LinearAlgebra() {
                         console.log(i, j)
                         matrixTemp[j][k] = matrixTemp[j][k] - temp * matrixTemp[i][k]
                     }
-                    console.log(matrixTemp)
                 }
 
             }
@@ -391,7 +375,7 @@ function LinearAlgebra() {
             arrayX[row] = parseFloat((matrixTemp[row][matrixTemp.length] / matrixTemp[row][row]).toFixed(0))
         }
 
-        console.log(arrayX)
+        checkAnswer(matrixA, arrayX)
         setAnswer(JSON.stringify(arrayX))
 
     }
@@ -463,6 +447,7 @@ function LinearAlgebra() {
                 setChartData(dataAnswer)
                 setChartError(dataError)
                 arrayX = arrayX.map(index => Number(index))
+                checkAnswer(matrixA, arrayX)
                 setAnswer(JSON.stringify(arrayX))
                 return
             }
@@ -509,9 +494,7 @@ function LinearAlgebra() {
                 arrayX[row] = arrayXnew[row]
             }
 
-            console.log("Before replace Array X: " + arrayX)
             arrayX = JSON.parse(JSON.stringify(arrayXnew))
-            console.log("After replace Array X: " + arrayX)
 
             let objAnswer = {
                 iteration: round.toString()
@@ -540,7 +523,10 @@ function LinearAlgebra() {
                 setMatrixLength(matrixAForm.length)
                 setChartData(dataAnswer)
                 setChartError(dataError)
+                arrayX = arrayX.map(index => Number(index))
                 setAnswer(JSON.stringify(arrayX))
+                console.log("Type of arrayX ",typeof(arrayX))
+                checkAnswer(matrixA, arrayX)
                 break
             }
             else {
@@ -592,9 +578,14 @@ function LinearAlgebra() {
             
 
             if (error < epsilon) {
+                console.log("********************************************")
                 setMatrixLength(matrixAForm._data.length)
                 setChartData(dataAnswer)
                 setChartError(dataError)
+                arrayXnew = arrayXnew.map(index => Number(index.toFixed(6)))
+                
+                console.log("Type of arrayXnew ",typeof(arrayXnew))
+                checkAnswer(matrixA, arrayXnew)
                 setAnswer(arrayXnew)
                 return
             }
@@ -612,9 +603,9 @@ function LinearAlgebra() {
             let objError = {
                 iteration: round.toString()
             }
-            
+        
             for (let i = 0; i < matrixAForm._data.length; i++) {
-                console.log("arrayX: ",arrayX._data[i])
+    
                 objAnswer = Object.assign(objAnswer, { ["X" + (i + 1)]: arrayX._data[i] })
             }
 
@@ -627,7 +618,6 @@ function LinearAlgebra() {
             setMatrixLength(matrixAForm.length)
             dataAnswer.push(objAnswer)
             dataError.push(objError)
-            console.log("obj ", dataAnswer)
 
             round = round+1
         }
@@ -635,15 +625,16 @@ function LinearAlgebra() {
     }
 
     const showMatrix = (matrix) => {
+        console.log(matrix)
         try {
             return (
-                <MathJax dynamic>
+                <MathJax dynamic inline>
                     {"\\(" +
-                        parse(matrix.toString().replace(/\r/g, "")).toTex({
+                        math.parse(matrix.toString().replace(/\*/g, "")).toTex({
                             parenthesis: "keep",
                             implicit: "show",
                         }) +
-                        "\\)"}
+                    "\\)"}
                 </MathJax>
             );
         } catch (e) {
@@ -657,9 +648,6 @@ function LinearAlgebra() {
 
         var colorLine = ["#FF3333", "#FF33FC", "#8D33FF", "#333CFF", "#33E0FF", "33FF3C"]
         for (let i = 1; i <= length; i++) {
-            console.log(chartData)
-            console.log(Object.keys(chartData))
-            console.log("Set X" + i)
             chartLine.push(<Line type="monotone" dataKey={"X" + i} stroke={colorLine[i]} strokeWidth={5} />)
         }
 
@@ -669,21 +657,21 @@ function LinearAlgebra() {
     const inputMatrixA = (matrixSize) => {
 
         var matrixBoxA = [];
-
+        
         for (let row = 0; row < matrixSize.rows; row++) {
             for (let column = 0; column < matrixSize.columns; column++) {
                 matrixBoxA.push(<input id={row + "" + column} type="text" onChange={handleMatrixAInput} disabled={disableInput} />)
             }
             matrixBoxA.push(<br />)
         }
-
+     
         return matrixBoxA
     }
 
     const inputMatrixB = (matrixSize) => {
 
         var matrixBoxB = [];
-
+        
         for (let row = 0; row < matrixSize.rows; row++) {
             matrixBoxB.push(<input id={row} type="text" onChange={handleMatrixBInput} disabled={disableInput} />)
             matrixBoxB.push(<br />)
@@ -725,20 +713,39 @@ function LinearAlgebra() {
         let matrixTranspose = JSON.parse(JSON.stringify(math.transpose(matrixTemp)))
 
         let matrixATemp = JSON.parse(JSON.stringify(matrixTemp))
-
-        console.log(matrixATemp)
-        for (let rows = 0; rows < matrixATemp[0].length; rows++) {
-            for (let columns = 0; columns < matrixATemp.length; columns++) {
-                if (matrixATemp[rows][columns] !== matrixTranspose[rows][columns]) {
-                    return setMatrixA("matrix is non-symmetric")
+        console.log("matrixATemp is ",matrixATemp)
+        console.log("matrixATemp Lenght ",matrixATemp.data.length)
+        for (let rows = 0; rows < matrixATemp.data.length; rows++) {
+            for (let columns = 0; columns < matrixATemp.data[0].length; columns++) {
+                if (matrixATemp.data[rows][columns] !== matrixTranspose.data[rows][columns]) {
+                    console.log("non-sym")
+                    return false
                 }
             }
         }
 
-        console.log(matrixTranspose)
+        return true
 
     }
 
+    const checkAnswer = (matrixA, answer) => {
+
+        console.log("A ",matrixA)
+        console.log("B ",answer)
+        answer = math.matrix(answer)
+        console.log("Type of MatrixA is ",typeof(matrixA))
+        console.log("Type of MatrixAnswer is ",typeof(answer))
+        console.log("Type of answerForm is ",typeof(answerForm))
+        let matrixAForm = math.matrix(JSON.parse(matrixA))
+        let matrixAnswerForm = math.matrix(JSON.parse(answer))
+
+        let matrixProveAX = math.multiply(matrixAForm, matrixAnswerForm)
+        matrixProveAX = matrixProveAX.map(index => Number(index.toFixed(0)))
+        setMatrixProve(matrixProveAX)
+        console.log("matrixProve",matrixProve)
+        return
+        
+    }
     return (
 
         <div className='entire_page'>
@@ -760,7 +767,7 @@ function LinearAlgebra() {
 
                 <label>Problem:</label>
                 <select onChange={handleProblem}>
-                    <option value="none" >Select Equation</option>
+                    <option defaultValue={"none"} value="none" >Select Equation</option>
                     <option value="Custom">Custom</option>
                     {apiProblem ? apiProblem.map(item => <option key={item.id} >{item.id}</option>) : null}
 
@@ -779,8 +786,6 @@ function LinearAlgebra() {
                     <p>Example input [B]: [12, 17, 14, 7] </p> */}
 
                     <div className='input-size'>
-
-
                         <label>Input Matrix Size</label>
 
                         <br />
@@ -842,14 +847,15 @@ function LinearAlgebra() {
 
             <div className='content' style={{ textAlign: 'center' }}>
 
-                <div className='matrix-div'>
+                <div className='matrixA-div'>
                     <h2> MatrixA is </h2>
                     <MathJaxContext>
                         {showMatrix(matrixA)}
                         {/* <MathJax dynamic>{"\\(" +parse(matrixA.toString().replace(/\r/g, "")).toTex({parenthesis: "keep",implicit: "show",})+ "\\)"}</MathJax> */}
                     </MathJaxContext>
+                </div>
 
-
+                <div className='matrixB-div'>    
                     <h2> MatrixB is </h2>
                     <MathJaxContext>
                         {showMatrix(matrixB)}
@@ -863,6 +869,13 @@ function LinearAlgebra() {
                     <h2> Answer is </h2>
                     <MathJaxContext>
                         <MathJax dynamic>{"\\(" + math.parse(answer.toString().replace(/\r/g, "")).toTex({ parenthesis: "keep", implicit: "show", }) + "\\)"}</MathJax>
+                    </MathJaxContext>
+                </div>
+
+                <div className='prove-answer'>
+                    <h2> Prove Answer is </h2>
+                    <MathJaxContext>
+                        {showMatrix(matrixProve)}
                     </MathJaxContext>
                 </div>
 

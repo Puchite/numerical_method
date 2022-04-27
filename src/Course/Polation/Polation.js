@@ -8,7 +8,7 @@ import Desmos from 'desmos'
 import { Chart } from 'chart.js'
 import  { MathJax, MathJaxContext } from 'better-react-mathjax'
 import { DataGrid } from '@mui/x-data-grid';
-
+import './Polation.css'
 import {
     LineChart,
     Line,
@@ -78,6 +78,8 @@ function Polation(){
     const [ right, setRight ] = useState('10')
     const [ x, setX ] = useState('')
     const [ y, setY ] = useState('')
+    const [ findX, setfindX ] = useState(0)
+    const [ selection, setSelection ] = useState([])
     const [ rowTable, setRowTable ] = useState([
         {
             id: '',
@@ -107,6 +109,7 @@ function Polation(){
     const rowTableRef = useRef(rowTable)
     const xRef = useRef(x)
     const yRef = useRef(y)
+    const findXRef = useRef(findX)
     
     let tempAnswer;
 
@@ -130,11 +133,12 @@ function Polation(){
             rowTableRef.current = rowTable
             xRef.current = x
             yRef.current = y
+            findXRef.current = findX
         }
 
         
 
-    }, [equation, problem, chartData, rowTable]);
+    }, [equation, problem, chartData, rowTable, x, y, findX]);
 
 
     const getData = async () => {
@@ -165,6 +169,7 @@ function Polation(){
         else
         {
             setMethod(e.target.value)
+            console.log(problem)
             setProblem('Custom')
         }
 
@@ -180,11 +185,11 @@ function Polation(){
                 break
             
             case '2':
-                setapiProblem(res.onePoint)
+                setapiProblem()
                 break
 
             case '3':
-                setapiProblem(res.newtonRaphson)
+                setapiProblem()
                 break
 
             default:
@@ -196,31 +201,55 @@ function Polation(){
     const handleProblem = (e) => {
 
         setProblem(e.target.value)
-        setX(apiProblem[e.target.value-1].x)
-        setY(apiProblem[e.target.value-1].y)
-        console.log(apiProblem[e.target.value-1].x)
-        let obj = []
-        for(let index = 0; index < apiProblem[e.target.value-1].x.length;  index++)
-        {
-            console.log("X",apiProblem[e.target.value-1].x[index])
-            console.log("Y",apiProblem[e.target.value-1].y[index])
-            obj.push({id:index, x:apiProblem[e.target.value-1].x[index], y:apiProblem[e.target.value-1].y[index]})
-        }
+        // setX(apiProblem[e.target.value-1].x)
+        // setY(apiProblem[e.target.value-1].y)
+        // console.log(apiProblem[e.target.value-1].x)
+        // let obj = []
+        // for(let index = 0; index < apiProblem[e.target.value-1].x.length;  index++)
+        // {
+        //     console.log("X",apiProblem[e.target.value-1].x[index])
+        //     console.log("Y",apiProblem[e.target.value-1].y[index])
+        //     obj.push({id:index, x:apiProblem[e.target.value-1].x[index], y:apiProblem[e.target.value-1].y[index]})
+        // }
 
-        setRowTable(obj)
-        console.log(rowTable)
+        // setRowTable(obj)
+        // console.log(rowTable)
         if(e.target.value === 'Custom')
         {
             setDisableinput(false)
             setCustominput(true)
+            setRowTable([
+                { 
+                    id: '', 
+                    x: '', 
+                    y: '' 
+                }
+            ])
         }
         else
         {
             setDisableinput(true)
             setCustominput(false)
+            setX(apiProblem[e.target.value-1].x)
+            setY(apiProblem[e.target.value-1].y)
+            console.log(apiProblem[e.target.value-1].x)
+            let obj = []
+            for(let index = 0; index < apiProblem[e.target.value-1].x.length;  index++)
+            {
+                console.log("X",apiProblem[e.target.value-1].x[index])
+                console.log("Y",apiProblem[e.target.value-1].y[index])
+                obj.push({id:index, x:apiProblem[e.target.value-1].x[index], y:apiProblem[e.target.value-1].y[index]})
+            }
+    
+            setRowTable(obj)
+            console.log(rowTable)
         }
         
     }  
+
+    const handlefindX = (e) => {
+        setfindX(e.target.value)
+    }
 
     const handleSubmit = (e) => {
 
@@ -276,7 +305,7 @@ function Polation(){
                 break
 
             case 'lagrange':
-                calLagrange(x, y)
+                calLagrange(x, y, findX)
                 break
 
             case '1':
@@ -333,8 +362,9 @@ function Polation(){
         }
     }
 
-    function calLagrange(x, y){
-        let xx = 250
+    function calLagrange(x, y, findX){
+        console.log("findX ",findX)
+        let xx = parseInt(findX)
         let round = x.length
         let l = 0
         console.log("x is: ",x)
@@ -403,16 +433,28 @@ function Polation(){
                     <div className='input-div'>
                         
                         <div className='equation-input-div'>
-                            <label>X::</label>
+                            <label>number of X </label>
                             <input 
-                                type="text" 
+                                type="number" 
                                 onChange={handleEquationInput} 
                                 disabled={disableInput} 
                                 placeholder='equation'
                             />
                         </div>
 
-                        <input type="submit" value="Submit" />
+                        <div className='x-input-div'>
+                            <label>Point of X:</label>
+                            <input 
+                                type="number" 
+                                onChange={handlefindX} 
+                                placeholder='X'
+                            />
+                        </div>
+
+                        <div className='button-submit'>
+                            <input type="submit" value="Submit" />
+                        </div>
+                        
 
                     </div>
 
@@ -431,65 +473,31 @@ function Polation(){
                             rowsPerPageOptions={[10]}
                             checkboxSelection
                             onSelectionModelChange={(newSelection) => {
+                                  let arrX = []
+                                  let arrY = []
+                                  for (let index in newSelection)
+                                  {                                                                                                        
+                                      arrX.splice(index, 0, apiProblem[problem-1].x[newSelection[index]])
+                                      arrY.splice(index, 0, apiProblem[problem-1].y[newSelection[index]])                                                                          
+                                  }
+                                  
+                                  setX(arrX)
+                                  setY(arrY)
+                                  setSelection(newSelection)
                                   
                             }}
+                            selectionModel={selection}
+                            editMode="row"
                         />
                     </div>
                 </div>
 
                 <div className='answer-div'>
-                    <h2> answer is  {answer} </h2>
+                    <h2> answer is Y = {answer} </h2>
                 </div>
                 
             </div>                        
             
-            {/* <div className='chart'>
-            
-                
-                <div className='error-chart'>
-                    <label>Error</label>
-
-                    <LineChart
-                        width={500}
-                        height={500}                
-                        data={chartData}
-                        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                    >
-
-                        <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                        <XAxis />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="value" stroke="#F1230A" strokeWidth={5} />
-                    </LineChart>
-
-                </div>
-
-                
-                <div className='answer-chart'>
-                    <label>Answer</label>
-                    <LineChart
-                        width={500}
-                        height={500}                
-                        data={chartAnswer}
-                        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                    >
-                        <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-                        <XAxis />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey="answer" stroke="#6EF50B" strokeWidth={5} />
-                    </LineChart>
-
-                </div>
-            
-            </div> */}
-
-            {/* <SyntaxHighlighter className="code" language="javascript" style={xonokai} showLineNumbers='true' >
-                {codeString+codeString2}
-            </SyntaxHighlighter>         */}            
 
            
         </div>     
