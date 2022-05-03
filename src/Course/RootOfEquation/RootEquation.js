@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react'
-import './RootEquation.css'
-import axios from 'axios'
-import * as math from 'mathjs'
-import Desmos from 'desmos'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import TextField from '@mui/material/TextField'
 import { DataGrid } from '@mui/x-data-grid'
-import  { MathJax, MathJaxContext } from 'better-react-mathjax'
+import axios from 'axios'
+import { MathJax, MathJaxContext } from 'better-react-mathjax'
+import Desmos from 'desmos'
+import * as math from 'mathjs'
+import React, { useEffect, useRef, useState } from 'react'
 import {
-    LineChart,
-    Line,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
-} from "recharts";
+    CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis,
+    YAxis
+} from "recharts"
+import './RootEquation.css'
 
 let epsilon = 0.000001
 let elt = document.getElementById('elt')
@@ -21,43 +21,43 @@ let calculator = Desmos.GraphingCalculator(elt)
 let token;
 
 const methodOption = [
-    { value: "bisection", label: "Bisection Method"},
+    { value: "bisection", label: "Bisection Method" },
     { value: "falsePosition", label: "False Position Method" },
     { value: "onePoint", label: "One Point Method" },
-    { value: "newtonRaphson", label: "Newton Raphson Method"},
+    { value: "newtonRaphson", label: "Newton Raphson Method" },
 ]
 
-const login = async () =>  {
-    await axios.post('http://localhost:3001/login',{
-      email: "s6204062616316@email.kmutnb.ac.th",
-      password: "0859150757"
+const login = async () => {
+    await axios.post('http://localhost:3001/login', {
+        email: "s6204062616316@email.kmutnb.ac.th",
+        password: "0859150757"
     }).then((res) => {
-      token= res.data
-      console.log("Token is ",token)
+        token = res.data
+        console.log("Token is ", token)
     })
-  }
+}
 
 
-function RootEquation(){
-    
-    const [ left, setLeft ] = useState('-10')
-    const [ right, setRight ] = useState('10')
-    const [ start, setStart ] = useState(0)
-    const [ bound, setBound ] = useState({left:0, right:10}) 
-    const [ table, SetTable ] = useState({"rowsTable" : [], "columnsTable" : []})
-    const [ equation, setEquation ] = useState('')
-    const [ answer, setAnswer ] = useState(0)
-    const [ dataError, setDataError ] = useState([])
-    const [ chartData, setChartData ] = useState([])
-    const [ chartAnswer, setChartAnswer] = useState([])
-    const [ apiProblem, setapiProblem ] = useState('')
-    const [ problem, setProblem] = useState('Custom')
-    const [ disableInput, setDisableinput ] = useState(true)
-    const [ customInput, setCustominput ] = useState(false)
-    const [ method, setMethod ] = useState('none')
-    const [ res, setRes ] = useState([])
+function RootEquation() {
+
+    const [left, setLeft] = useState('-10')
+    const [right, setRight] = useState('10')
+    const [start, setStart] = useState(0)
+    const [bound, setBound] = useState({ left: 0, right: 10 })
+    const [table, SetTable] = useState({ "rowsTable": [], "columnsTable": [] })
+    const [equation, setEquation] = useState('')
+    const [answer, setAnswer] = useState(0)
+    const [dataError, setDataError] = useState([])
+    const [chartData, setChartData] = useState([])
+    const [chartAnswer, setChartAnswer] = useState([])
+    const [apiProblem, setapiProblem] = useState('')
+    const [problem, setProblem] = useState('Custom')
+    const [disableInput, setDisableinput] = useState(true)
+    const [customInput, setCustominput] = useState(false)
+    const [method, setMethod] = useState('none')
+    const [res, setRes] = useState([])
     // const [ token, setToken ] = useState([])
-    
+
 
     const isfirstRender = useRef(true)
     const equationRef = useRef(equation)
@@ -68,9 +68,9 @@ function RootEquation(){
     let tempAnswer;
     let tempObj;
 
-      
+
     useEffect(() => {
-        
+
         // const login = async () =>  {
         //     await axios.post('http://localhost:3001/login',{
         //       email: "s6204062616316@email.kmutnb.ac.th",
@@ -81,7 +81,7 @@ function RootEquation(){
         //       console.log("Token is ",token)
         //     })
         //   }
-          
+
         // console.log(res)
         // const getData = async () => {
         //     // await axios.get('http://localhost:3001/root-equation')
@@ -90,7 +90,7 @@ function RootEquation(){
         //                                     console.log('fetch success data is', res.data)
         //                                     const response = res.data
         //                                     setRes(response)
-                                            
+
         //                                 }, (error) => {
         //                                     console.log(error)})
         //     console.log("ACCESS TOKEN ",token)
@@ -103,26 +103,24 @@ function RootEquation(){
         //     })
         // }
 
-        if(isfirstRender.current)
-        {
+        if (isfirstRender.current) {
             login();
             getData();
-            elt = document.getElementById('elt')   
+            elt = document.getElementById('elt')
             calculator = Desmos.GraphingCalculator(elt,
                 {
-                    keypad:false,
-                    settingsMenu:false,
-                    expressionsTopbar:false,
-                    expressions:false
-                });      
-            calculator.setExpression({ id: 'graph2', latex: 0})
+                    keypad: false,
+                    settingsMenu: false,
+                    expressionsTopbar: false,
+                    expressions: false
+                });
+            calculator.setExpression({ id: 'graph2', latex: 0 })
             isfirstRender.current = false
             console.log("*This is First Render")
         }
-        else
-        {
+        else {
             equationRef.current = equation
-            problemRef.current = problem 
+            problemRef.current = problem
             chartDataRef.current = chartData
             chartAnswerRef.current = chartAnswer
         }
@@ -143,51 +141,48 @@ function RootEquation(){
     const getData = async () => {
         // await axios.get('http://localhost:3001/root-equation')
         await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
-                                   .then((res) =>{
-                                        console.log('fetch success data is', res.data)
-                                        const response = res.data
-                                        setRes(response)
-                                        
-                                    }, (error) => {
-                                        console.log(error)})
-                                        
-        console.log("ACCESS TOKEN ",token)
+            .then((res) => {
+                console.log('fetch success data is', res.data)
+                const response = res.data
+                setRes(response)
+
+            }, (error) => {
+                console.log(error)
+            })
+
+        console.log("ACCESS TOKEN ", token)
         await axios.get('http://localhost:3001/root-equation', {
-            headers:{
-                "Authorization" : `Bearer ${token.accessToken}`
+            headers: {
+                "Authorization": `Bearer ${token.accessToken}`
             }
-        }).then((response) =>{
-            console.log("get with token data is ",response.data)
+        }).then((response) => {
+            console.log("get with token data is ", response.data)
         })
     }
 
     const handleLeftInput = (e) => {
 
-        if(e.target.value === '')
-        {
+        if (e.target.value === '') {
             setLeft('-100')
         }
-        else
-        {
+        else {
             setLeft(e.target.value)
         }
-        
+
     }
 
     const handleRightInput = (e) => {
 
-        if(e.target.value === '')
-        {
+        if (e.target.value === '') {
             setRight('100')
         }
-        else
-        {
+        else {
             setRight(e.target.value)
         }
-        
+
     }
 
-    const handleStartInput = (e) =>{
+    const handleStartInput = (e) => {
         setStart(e.target.value)
     }
 
@@ -199,27 +194,24 @@ function RootEquation(){
     const handleMethod = (e) => {
 
         console.log(e.target.value)
-        if(e.target.value === 'none')
-        {
+        if (e.target.value === 'none') {
             setMethod('none')
         }
-        else
-        {
+        else {
             setMethod(e.target.value)
             setProblem('')
         }
 
-        switch (e.target.value)
-        {
-            
-            case "bisection":         
+        switch (e.target.value) {
+
+            case "bisection":
                 setapiProblem(res.bisection)
                 break
-            
+
             case 'falsePosition':
                 setapiProblem(res.falsePosition)
                 break
-            
+
             case 'onePoint':
                 console.log('onePoint')
                 setapiProblem(res.onePoint)
@@ -233,67 +225,63 @@ function RootEquation(){
             default:
                 console.log('No Method Found')
         }
-    
+
     }
 
     const handleProblem = (e) => {
 
         setProblem(e.target.value)
-        
-        if(e.target.value === 'Custom')
-        {
+
+        if (e.target.value === 'Custom') {
             setDisableinput(false)
             setCustominput(true)
         }
-        else
-        {
+        else {
             setDisableinput(true)
             setCustominput(false)
         }
-        
-    }  
+
+    }
 
     const handleSubmit = (e) => {
 
         e.preventDefault();
 
-        if(customInput === true)
-        {
-            setProblem(equation)                 
-            callMethodCustom(method)          
-            
-            try {   
-                console.log('equation:'+equation+' answer: '+answer)
-                console.log("tempAnswer: "+tempAnswer)
-                let point = "("+tempAnswer+",0)"
-                
-                calculator.setExpression({ id: 'graph1', latex: equation.replace(/\(/g,'').replace(/\)/g,'')})
-                calculator.setExpression({ id: 'graph2', latex: point});
-    
+        if (customInput === true) {
+            setProblem(equation)
+            callMethodCustom(method)
+
+            try {
+                console.log('equation:' + equation + ' answer: ' + answer)
+                console.log("tempAnswer: " + tempAnswer)
+                let point = "(" + tempAnswer + ",0)"
+
+                calculator.setExpression({ id: 'graph1', latex: equation.replace(/\(/g, '').replace(/\)/g, '') })
+                calculator.setExpression({ id: 'graph2', latex: point });
+
             } catch (error) {
                 console.log("update Plot Error")
             }
-            
-        }
-        else
-        {
-            callMethod(method)
-            
-            try {   
-                
-                let point = "("+tempAnswer+",0)";
-                let xLeft = "x="+left;
-                let xRight = "x="+right;  
-                calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g,'').replace(/\)/g,'')});
-                calculator.setExpression({ id: 'graph2', latex: point} );
-                calculator.setExpression({ id: 'graph3', latex: xLeft});
-                calculator.setExpression({ id: 'graph4', latex: xRight});
 
-                
-                if(method === 'bisection' || method === 'falsePosition');
+        }
+        else {
+            callMethod(method)
+
+            try {
+
+                let point = "(" + tempAnswer + ",0)";
+                let xLeft = "x=" + left;
+                let xRight = "x=" + right;
+                calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g, '').replace(/\)/g, '') });
+                calculator.setExpression({ id: 'graph2', latex: point });
+                calculator.setExpression({ id: 'graph3', latex: xLeft });
+                calculator.setExpression({ id: 'graph4', latex: xRight });
+
+
+                if (method === 'bisection' || method === 'falsePosition');
                 // eslint-disable-next-line no-lone-blocks
                 {
-                    
+
                     // let xLeft = "x="+left;
                     // let xRight = "x="+right;                    
 
@@ -308,31 +296,29 @@ function RootEquation(){
                     //         calculator.setExpression({ id: 'right', latex: xRight});
                     //         console.log("xl ",table.rowsTable[i].xl)
                     //         console.log("xr ",table.rowsTable[i].xr)
-                            
+
                     //     },i*5000)
                     // }
-                
+
                 }
-   
+
             } catch (error) {
                 console.log("update Plot Error");
             }
-        }      
-        
+        }
+
 
     }
 
-    function callMethod(method)
-    {
-        switch(method)
-        {
+    function callMethod(method) {
+        switch (method) {
             case 'bisection':
                 console.log('bisection')
-                console.log('equation: '+problem+' left: '+left+' right:'+right)
-                setAnswer(calBisection(problem, left, right))        
-                console.log("tempObj",tempObj)
+                console.log('equation: ' + problem + ' left: ' + left + ' right:' + right)
+                setAnswer(calBisection(problem, left, right))
+                console.log("tempObj", tempObj)
                 tempAnswer = calBisection(problem, left, right).toFixed(6)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
 
                 // tempObj = calculateBisection(problem, left, right, epsilon);
@@ -361,107 +347,105 @@ function RootEquation(){
 
                 // setChartAnswer(dataAnswer);
                 // setChartData(dataError);
-                
+
                 break;
 
             case 'falsePosition':
                 // tempObj = calculateFalsePosition(equation, left, right, epsilon)
                 // console.log(tempObj)
                 console.log('falsePosition')
-                console.log('equation: '+problem+' left: '+left+' right: '+right)
+                console.log('equation: ' + problem + ' left: ' + left + ' right: ' + right)
                 tempAnswer = calFalsePosition(problem, left, right)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
-                
+
 
                 break
 
             case 'onePoint':
                 console.log('onePoint')
-                console.log('equation: '+problem+' start: '+start)
+                console.log('equation: ' + problem + ' start: ' + start)
                 tempAnswer = calOnePoint(problem, start)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
                 break
-            
+
             case 'newtonRaphson':
                 console.log('newtonRaphson')
-                console.log('equation: '+problem+' start: '+start)
+                console.log('equation: ' + problem + ' start: ' + start)
                 tempAnswer = calNewton(problem, start)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
                 break
 
             default:
                 console.log('No Method Found')
-                
-        }     
 
-        
+        }
+
+
     }
 
-    function callMethodCustom(method)
-    {
-        switch(method)
-        {
+    function callMethodCustom(method) {
+        switch (method) {
             case 'bisection':
                 console.log('bisection')
-                console.log('equation: '+equation+' left: '+left+' right:'+right)
+                console.log('equation: ' + equation + ' left: ' + left + ' right:' + right)
                 // setAnswer(calBisection(problem, left, right))
                 tempAnswer = calBisection(equation, left, right)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
                 break
 
             case 'falsePosition':
                 console.log('falsePosition')
-                console.log('equation: '+equation+' left: '+left+' right: '+right)
+                console.log('equation: ' + equation + ' left: ' + left + ' right: ' + right)
                 tempAnswer = calFalsePosition(equation, left, right)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
                 break
 
             case 'onePoint':
                 console.log('onePoint')
-                console.log('equation: '+equation+' start: '+start)
+                console.log('equation: ' + equation + ' start: ' + start)
                 tempAnswer = calOnePoint(equation, start)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
                 break
-            
+
             case 'newtonRaphson':
                 console.log('newtonRaphson')
-                console.log('equation: '+equation+' start: '+start)
+                console.log('equation: ' + equation + ' start: ' + start)
                 tempAnswer = calNewton(equation, start)
-                console.log("Temp answer:"+tempAnswer)
+                console.log("Temp answer:" + tempAnswer)
                 setAnswer(tempAnswer)
                 break
 
             default:
                 console.log('No Method Found')
-                
-        }     
+
+        }
     }
 
-    function calFunction(equation, xq){
-        
+    function calFunction(equation, xq) {
+
         try {
             let eq = math.parse(equation)
-            return eq.evaluate({x:xq})
+            return eq.evaluate({ x: xq })
         } catch (error) {
             console.log("Equation Error")
         }
-        
+
     }
 
-    function calBisection(equation, xl, xr){
+    function calBisection(equation, xl, xr) {
 
-        console.log("bound ",bound.left)
+        console.log("bound ", bound.left)
         xl = parseFloat(xl)
         xr = parseFloat(xr)
         let dataError = []
         let dataAnswer = []
-        let xm = ((xl+xr)/2) 
+        let xm = ((xl + xr) / 2)
         let c = 1
         let temp = 0
         let fxm = 0
@@ -469,53 +453,51 @@ function RootEquation(){
         let round = 1
         let objTable = []
 
-        while(c>epsilon){
-            
+        while (c > epsilon) {
+
             // console.log("Iteration: ",round) 
-            
+
             fxm = calFunction(equation, xm)
             fxr = calFunction(equation, xr)
-    
-            if (fxm*fxr > 0){
+
+            if (fxm * fxr > 0) {
                 temp = xr
                 xr = xm
             }
-            else{
+            else {
                 temp = xl
                 xl = xm
             }
-            
-            c = (xm-temp)/xm
+
+            c = (xm - temp) / xm
             c = Math.abs(c)
 
             // console.log("Error :" ,c)
-            if(!isFinite(c) || isNaN(c))
-            {
+            if (!isFinite(c) || isNaN(c)) {
                 console.log("C is inf or NaN")
                 c = 1;
-                dataError.push({error:1})    
+                dataError.push({ error: 1 })
             }
-            else
-            {
-                dataError.push({error:c})
+            else {
+                dataError.push({ error: c })
             }
 
-            xm = (xl+xr)/2
-            dataAnswer.push({answer:xm})
+            xm = (xl + xr) / 2
+            dataAnswer.push({ answer: xm })
 
-            objTable.push({id:round, xl:xl.toFixed(6), xr:xr.toFixed(6), xm:xm.toFixed(6), error:c.toFixed(6)})
-            round = round+1
+            objTable.push({ id: round, xl: xl.toFixed(6), xr: xr.toFixed(6), xm: xm.toFixed(6), error: c.toFixed(6) })
+            round = round + 1
             // console.log("--------------------------")
         }
-        
-        console.log("DataError: ",dataError)
+
+        console.log("DataError: ", dataError)
         setChartData(dataError)
         setChartAnswer(dataAnswer)
 
         const columnsTemp = [
-            { 
+            {
                 field: 'id',
-                headerName: 'Iteration', 
+                headerName: 'Iteration',
                 width: 70,
                 type: 'number',
                 editable: false,
@@ -553,25 +535,25 @@ function RootEquation(){
                 editable: false,
                 sortable: false,
             }
-          ];
+        ];
 
         let test = Object.keys(objTable)[Object.keys(objTable).pop()]
-        console.log("test is ",test)
-        console.log("obj is ",objTable[test].xm)
-        console.log("Last Object ",Object.keys(objTable)[Object.keys(objTable).length-1])
+        console.log("test is ", test)
+        console.log("obj is ", objTable[test].xm)
+        console.log("Last Object ", Object.keys(objTable)[Object.keys(objTable).length - 1])
         SetTable(
             {
-                columnsTable:columnsTemp, 
-                rowsTable:objTable
+                columnsTable: columnsTemp,
+                rowsTable: objTable
             }
         )
 
 
         return xm
-    
+
     }
-    
-    function calFalsePosition(equation, xl, xr){
+
+    function calFalsePosition(equation, xl, xr) {
 
         xl = parseFloat(xl)
         xr = parseFloat(xr)
@@ -583,52 +565,55 @@ function RootEquation(){
         let objTable = []
         let round = 1
 
-        while(round<100){
-    
-            console.log("Iteration ",round)
+        while (round < 100) {
+
+            console.log("Iteration ", round)
             let fx1 = calFunction(equation, x1)
             let fxl = calFunction(equation, xl)
             let fxr = calFunction(equation, xr)
-    
-            x1 = ((xl*fxr)-(xr*fxl))/(fxr-fxl)
-            dataAnswer.push({answer:x1})
-            
-            if (fx1*fxr > 0){
+
+            x1 = ((xl * fxr) - (xr * fxl)) / (fxr - fxl)
+            dataAnswer.push({ answer: x1 })
+
+            if (fx1 * fxr > 0) {
                 temp = xr
                 xr = x1
             }
-            else{
+            else {
                 temp = xl
                 xl = x1
             }
-    
-            c = (x1-temp)/x1
-            c = Math.abs(c)     
-            
-            if(!isFinite(c) || isNaN(c))
-            {
+
+            c = (x1 - temp) / x1
+            c = Math.abs(c)
+
+
+            if (!isFinite(c) || isNaN(c)) {
                 console.log("C is inf or NaN")
                 c = 1
-                dataError.push({error:1})    
+                dataError.push({ error: 1 })
             }
-            else
-            {
-                dataError.push({error:c})
+            else {
+                dataError.push({ error: c })
             }
 
             // objTable.push({id:round, xl:xl.toFixed(6), xr:xr.toFixed(6), x:x1.toFixed(6), error:c.toFixed(6)})
-            objTable.push({id:round, xl:xl.toFixed(6), xr:xr.toFixed(6), x:x1.toFixed(6), error:c.toFixed(6)})
-            round = round+1
+            objTable.push({ id: round, xl: xl.toFixed(6), xr: xr.toFixed(6), x: x1.toFixed(6), error: c.toFixed(6) })
+            round = round + 1
+
+            if (c < epsilon) {
+                break;
+            }
         }
-        
-        console.log("DataError: ",dataError)
+
+        console.log("DataError: ", dataError)
         setChartData(dataError)
         setChartAnswer(dataAnswer)
 
         const columnsTemp = [
-            { 
+            {
                 field: 'id',
-                headerName: 'ID', 
+                headerName: 'ID',
                 width: 70,
                 type: 'number',
                 editable: false,
@@ -666,21 +651,21 @@ function RootEquation(){
                 editable: false,
                 sortable: false,
             }
-          ];
+        ];
 
 
         SetTable(
             {
-                columnsTable:columnsTemp, 
-                rowsTable:objTable
+                columnsTable: columnsTemp,
+                rowsTable: objTable
             }
         )
 
-        return x1
-    
+        return x1.toFixed(6)
+
     }
 
-    function calOnePoint(equation, start){
+    function calOnePoint(equation, start) {
 
         let dataError = []
         let dataAnswer = []
@@ -690,29 +675,26 @@ function RootEquation(){
         let objTable = []
         let round = 1
 
-        while(round < 100){  
-          
-            x_new = calFunction(equation,x_old)
+        while (round < 100) {
 
-            dataAnswer.push({answer:x_new})
+            x_new = calFunction(equation, x_old)
 
-            c = Math.abs((x_new-x_old)/x_new)
+            dataAnswer.push({ answer: x_new })
 
-            if(!isFinite(c) || isNaN(c))
-            {
+            c = Math.abs((x_new - x_old) / x_new)
+
+            if (!isFinite(c) || isNaN(c)) {
                 c = 1
-                dataError.push({error:1})    
+                dataError.push({ error: 1 })
             }
-            else
-            {
-                dataError.push({error:c})
+            else {
+                dataError.push({ error: c })
             }
 
-            objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            objTable.push({ id: round, x_new: x_new.toFixed(6), x_old: x_old.toFixed(6), error: c.toFixed(6) })
             x_old = x_new
 
-            if(c<epsilon)
-            {
+            if (c < epsilon) {
                 break;
             }
             // if(c === Infinity){
@@ -720,30 +702,30 @@ function RootEquation(){
             //     console.log('Infinity')
             //     //   setChartData(dataError)
             //     //   setChartAnswer(dataAnswer)
-                
+
             //     //   return x_old
             //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
             //     break
             // }
-      
+
             // else
             // {                
             //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
             //     x_old = x_new                
             // }
 
-            round = round+1
-                        
+            round = round + 1
+
         }
-        
-        console.log("DataError: ",dataError)
+
+        console.log("DataError: ", dataError)
         setChartData(dataError)
         setChartAnswer(dataAnswer)
 
         const columnsTemp = [
-            { 
+            {
                 field: 'id',
-                headerName: 'ID', 
+                headerName: 'ID',
                 width: 70,
                 type: 'number',
                 editable: false,
@@ -773,22 +755,22 @@ function RootEquation(){
                 editable: false,
                 sortable: false,
             }
-          ];
+        ];
 
-        
+
         console.log(objTable)
         SetTable(
             {
-                columnsTable:columnsTemp, 
-                rowsTable:objTable
+                columnsTable: columnsTemp,
+                rowsTable: objTable
             }
         )
 
         return x_new
-      
+
     }
 
-    function calNewton(equation, start){
+    function calNewton(equation, start) {
 
         let dataError = []
         let dataAnswer = []
@@ -799,34 +781,31 @@ function RootEquation(){
         let round = 1
         let objTable = []
 
-        while(round < 100){  
-            
-            console.log("Iteration: ",round)
-            x_temp = -calFunction(equation, x_old)/calFunction(math.derivative(equation, 'x').toString(), x_old)
-            console.log("Delta X: "+x_temp)
+        while (round < 100) {
+
+            console.log("Iteration: ", round)
+            x_temp = -calFunction(equation, x_old) / calFunction(math.derivative(equation, 'x').toString(), x_old)
+            console.log("Delta X: " + x_temp)
             x_new = x_old + x_temp
-            console.log("X_new: "+x_new)
-            dataAnswer.push({answer:x_new})
+            console.log("X_new: " + x_new)
+            dataAnswer.push({ answer: x_new })
 
-            c = Math.abs((x_new-x_old)/x_new)
-            console.log("Error: "+c)
+            c = Math.abs((x_new - x_old) / x_new)
+            console.log("Error: " + c)
 
-            if(!isFinite(c) || isNaN(c))
-            {
+            if (!isFinite(c) || isNaN(c)) {
                 console.log("C is inf or NaN")
                 c = 1
-                dataError.push({error:1})    
+                dataError.push({ error: 1 })
             }
-            else
-            {
-                dataError.push({error:c})
+            else {
+                dataError.push({ error: c })
             }
 
-            objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
+            objTable.push({ id: round, x_new: x_new.toFixed(6), x_old: x_old.toFixed(6), error: c.toFixed(6) })
             x_old = x_new
 
-            if(c<epsilon)
-            {
+            if (c < epsilon) {
                 break;
             }
             // if(c === Infinity || isNaN(c)){
@@ -841,18 +820,18 @@ function RootEquation(){
             //     objTable.push({id:round, x_new:x_new.toFixed(6), x_old:x_old.toFixed(6), error:c.toFixed(6)})
             //     x_old = x_new
             // }
-            
-            round = round+1
+
+            round = round + 1
         }
-        
+
         setChartData(dataError)
         console.log("***Data Error is: ", dataError)
         setChartAnswer(dataAnswer)
 
         const columnsTemp = [
-            { 
+            {
                 field: 'id',
-                headerName: 'ID', 
+                headerName: 'ID',
                 width: 70,
                 type: 'number',
                 editable: false,
@@ -882,242 +861,356 @@ function RootEquation(){
                 editable: false,
                 sortable: false,
             }
-          ];
+        ];
 
-        
+
         console.log(objTable)
         SetTable(
             {
-                columnsTable:columnsTemp, 
-                rowsTable:objTable
+                columnsTable: columnsTemp,
+                rowsTable: objTable
             }
         )
 
         return x_new
-      
+
     }
 
-    const showProblem = (matrix) => {
+    const showProblem = (eq) => {
         try {
-          return (
+            return (
                 <MathJax dynamic>
-                  {"\\(" +
-                    math.parse(matrix.toString().replace(/\r/g, "")).toTex({
-                      parenthesis: "keep",
-                      implicit: "show",
-                    }) +
-                  "\\)"}
+                    {"\\(" +
+                        math.parse(eq.toString().replace(/\r/g, "")).toTex({
+                            parenthesis: "keep",
+                            implicit: "show",
+                        }) +
+                        "\\)"}
                 </MathJax>
-          );
+            );
         } catch (e) {
-          return <MathJax dynamic>{e.toString}</MathJax>;
+            return <MathJax dynamic>{e.toString}</MathJax>;
         }
     };
 
     const showTable = (table) => {
         try {
             return <DataGrid
-                        rows={table.rowsTable}
-                        columns={table.columnsTable}
-                        pageSize={100}
-                        rowsPerPageOptions={[100]}
-                    />
-            
+                rows={table.rowsTable}
+                columns={table.columnsTable}
+                pageSize={100}
+                rowsPerPageOptions={[100]}
+            />
+
         } catch (e) {
             console.log(e)
         }
-        
+
     }
 
     const proveAnswer = (answer) => {
         try {
-            if(method === 'onePoint')
-            {
-                let prove = ((calFunction(problem, answer))-answer).toFixed(6)
-                return prove     
+            if (method === 'onePoint') {
+                let prove = ((calFunction(problem, answer)) - answer)
+                return prove.toFixed(1)
             }
-            else
-            {
-                let prove = calFunction(problem, answer).toFixed(6)
-                return prove     
+            else {
+                let prove = (calFunction(problem, answer))
+                return prove.toFixed(1)
             }
-            
+
         } catch (error) {
             return "[Equation Error]"
         }
-        
+
     }
     return (
-            
+
         <div className='entire_page'>
-            
+
             <div className='super_header'>
 
                 <h1>
-                    This is Root Equation 
+                    This is Root Equation
                 </h1>
 
-                <label>Method:</label>
+                <div className='select-method-div'>
+                    <div className='select-method'>
+                        <FormControl sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="method-select-label"> Method </InputLabel>
+                            <Select
+                                // defaultValue={null}
+                                labelId="select-method"
+                                id="method-select"
+                                value={method}
+                                label="method"
+                                onChange={handleMethod}
+                            >
+                                {methodOption.map((options) =>
+
+                                    <MenuItem value={options.value}>{options.label}</MenuItem>)}
+
+                            </Select>
+                        </FormControl>
+                    </div>
+
+                </div>
+
+
+                {/* <label>Method:</label>
                 <select onChange={handleMethod}>
                     <option value='none' >Select Method for Solving Equation</option>
-                    {/* {methodOption.map(options => <option key={options.value}>{options.label}</option>)} */}
                     {methodOption.map((options) => <option key={options.value} value={options.value}>{options.label}</option>)}
 
-                </select>  
+                </select>   */}
 
-                <br/>
 
-                <label>Problem:</label>
+                <div className='select-problem-div'>
+                    <div className='select-problem'>
+                        <FormControl sx={{ m: 1, minWidth: 500 }}>
+                            <InputLabel id="problem-select-label"> Problem </InputLabel>
+                            <Select
+                                // defaultValue={null}
+                                labelId="select-problem"
+                                id="problem-select"
+                                value={problem}
+                                label="problem"
+                                onChange={handleProblem}
+                            >
+                                <MenuItem value='Custom'> Custom </MenuItem>
+                                {apiProblem ? apiProblem.map(item =>
+                                    <MenuItem value={item.problem}>
+                                        <MathJaxContext>{showProblem(item.problem)}</MathJaxContext>
+                                    </MenuItem>) : null}
+
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+
+
+                {/* <label>Problem:</label>
                 <select onChange={handleProblem}>
                     <option defaultValue={null} value="none" >Select Equation</option>
                     <option value="Custom">Custom</option>
                     {apiProblem ? apiProblem.map(item => <option key={item.problem} >{item.problem}</option>):null}
                     
-                </select>                                                            
-                
+                </select>                                                             */}
+
             </div>
 
-            <br/>
             {/* <div> Problem is : {problem} </div> */}
 
-            <form className='form' onSubmit={handleSubmit}>
+            <div className='form-div'>
+                <form className='form' onSubmit={handleSubmit}>
 
-                {
-                    method !== 'onePoint' & method !== 'newtonRaphson'  & method !== 'none' &&
-                                        
-                    <div className='input-div'>
-                        
-                        <div className='equation-input-div'>
-                            <label>Equation:</label>
-                            <input 
+                    {
+                        ((method !== 'onePoint') && (method !== 'newtonRaphson') && (method !== 'none')) && (
+
+                            <div className='input-div'>
+
+                                <div className='equation-input-div'>
+                                    <TextField
+                                        label='Equation'
+                                        type='text'
+                                        onChange={handleEquationInput}
+                                        id='equation'
+                                        disabled={disableInput}
+                                        variant="outlined"
+                                        placeholder='Equation'
+                                    />
+                                    {/* <input 
                                 type="text" 
                                 onChange={handleEquationInput} 
                                 disabled={disableInput} 
                                 placeholder='equation'
-                            />
-                        </div>
+                            /> */}
+                                </div>
 
-                        <div className='left-input-box'>
-                            <label>Left:</label>
-                            <input 
+                                <div className='left-input-box'>
+
+                                    <TextField
+                                        label='Left'
+                                        type='text'
+                                        onChange={handleLeftInput}
+                                        id='left'
+                                        variant="outlined"
+                                        placeholder='BoundLeft'
+
+                                    />
+                                    {/* <input 
                                 type="text" 
                                 onChange={handleLeftInput}
                                 placeholder='Default is -10'    
-                            />                            
-                        </div>
-                        
-                        <div className='right-input-box'>                        
-                            <label>Right:</label> 
+                            />                             */}
+                                </div>
+
+                                <div className='right-input-box'>
+                                    <TextField
+                                        label='Right'
+                                        type='text'
+                                        onChange={handleRightInput}
+                                        id='right'
+                                        variant="outlined"
+                                        placeholder='BoundRight'
+                                    />
+                                    {/* <label>Right:</label> 
                             <input 
                                 type="text"   
                                 onChange={handleRightInput} 
                                 placeholder="Default is 10"
-                            />
-                        </div>
+                            /> */}
+                                </div>
 
-                        <div className='button'>
-                            <input type="submit" value="Submit" />
-                        </div>
-                        
+                                <div className='button'>
+                                    {/* <input type="submit" value="Submit" /> */}
+                                    <Button variant="contained" type='submit' value='Submit' > Submit </Button>
+                                </div>
 
-                    </div>
-                
-                }
-                {
-                    method !== 'bisection' & method !== 'falsePosition' & method !== 'none' &&
 
-                    <div className='input-div'>
+                            </div>
+                        )}
+                    {
+                        ((method !== 'bisection') && (method !== 'falsePosition') && (method !== 'none')) && (
 
-                        <div className='equation-input-div'>
-                            <label>Equation:</label>
+                            <div className='input-div'>
+
+                                <div className='equation-input-div'>
+                                    {/* <label>Equation:</label>
                             <input 
+                                
                                 type="text" 
                                 onChange={handleEquationInput} 
                                 disabled={disableInput} 
                                 placeholder='equation'
-                            />
-                        </div>
-                        
-                        <div className='start-input-box'> 
-                            <label>Start:</label>
+                            /> */}
+                                    <TextField
+                                        label='Equation'
+                                        type='text'
+                                        onChange={handleEquationInput}
+                                        id='equation'
+                                        disabled={disableInput}
+                                        variant="outlined"
+                                        placeholder='Equation'
+                                    />
+                                </div>
+
+                                <div className='start-input-box'>
+                                    {/* <label>Start:</label>
                             <input 
                                 type="text" 
                                 // value={left} 
                                 onChange={handleStartInput}
                                 // disabled={disableInput} 
                                 placeholder='Default is 0'    
-                            />
-                        </div>
+                            /> */}
+                                    <TextField
+                                        label='Start'
+                                        type='text'
+                                        onChange={handleStartInput}
+                                        id='start'
+                                        variant="outlined"
+                                        // disabled={disableInput}
+                                        placeholder='Start'
+                                    />
+                                </div>
 
-                        <div className='button'>
-                            <input type="submit" value="Submit" />
-                        </div>
+                                <div className='button'>
+                                    {/* <input type="submit" value="Submit" /> */}
+                                    <Button variant="contained" type='submit' value='Submit' > Submit </Button>
+                                </div>
 
-                    </div>
-                
-                }
-                
-                {/* <label>
-                    Left:
-                    <input 
-                        type="text" 
-                        // value={left} 
-                        onChange={handleLeftInput}
-                        // disabled={disableInput} 
-                        placeholder='Left'    
-                    />
-                </label>
+                            </div>
 
-                <label>
-                    Right:
-                    <input 
-                        type="text" 
-                        // value={right}  
-                        onChange={handleRightInput}
-                        // disabled={disableInput}  
-                        placeholder="Right"
-                    />
-                </label> */}
-                    
-            </form>
+                        )}
 
-            <br/>
-
-            <div className='content' style={{textAlign: 'center'}}>
-
-                <div className='problem-div'>
-                    <h2> Equation is 
-                        <MathJaxContext>
-                            {showProblem(problem)}
-                        </MathJaxContext>                    
-                    </h2>
-                </div>
-
-                <div className='answer-div'>
-                    <h2> answer is  {answer} </h2>
-                </div>
-                <div className='prove'>
-                    <h2> Prove Answer is {proveAnswer(answer)}</h2>
-                </div>    
+                </form>
             </div>
-            
+
+            <br />
+
+            <div className='content' style={{ textAlign: 'center' }}>
+
+                        <div className='problem-div'>
+                            <div className='problem'>
+
+                                <h2> Equation
+                                    <MathJaxContext>
+                                        {showProblem(problem)}
+                                    </MathJaxContext>
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className='answer-div'>
+
+                            {
+                                ((isNaN(answer)) || (answer === Infinity)) && (
+
+                                    <div className='answer'>
+                                        <h2> Equation Error </h2>
+                                    </div>
+                                )
+                            }
+                            {
+                                (!isNaN(answer)) && (
+
+                                    <div className='answer'>
+                                        {/* <h2> Answer of Equation {answer} </h2> */}
+                                        <h2> Answer of Equation
+                                            <MathJaxContext>
+                                                {showProblem(answer)}
+                                            </MathJaxContext>
+                                        </h2>
+                                    </div>
+                                )
+                            }
+
+                        </div>
+
+                        <div className='prove-div'>
+
+                            {
+                                ((answer !== 0) || (isFinite(answer) || (isNaN(answer)))) && (
+                                    <div className='prove'>
+                                        <h2> Prove Answer <MathJaxContext> {showProblem(problem.replace(/\x/g, answer))} = {showProblem(proveAnswer(answer))} </MathJaxContext> </h2>
+                                    </div>
+                                )
+                            }
+                            {/* {
+                        (answer === 0) && (
+                            <div className='prove'>
+                                <h2> Prove Answer {proveAnswer(answer)} </h2>
+                            </div>
+                        )
+                    } */}
+                            {/* <h2> Prove Answer is <MathJaxContext> {showProblem(problem.replace(/\x/g, answer))} </MathJaxContext> = {proveAnswer(answer)} </h2> */}
+                        </div>
+
+            </div>
+
             <div className='plot-div'>
-                <div className='plot' id='elt' style={{width: '800px', height: '600px',}}> </div>
+                <div className='plot' id='elt' style={{ width: '800px', height: '600px', }}> </div>
+
+
             </div>
-            
-            
+
+
             <div className='chart'>
-            
-                
+
+
                 <div className='error-chart'>
                     <label>Error</label>
 
                     <LineChart
                         width={1000}
-                        height={600}                
+                        height={600}
                         data={chartData}
                         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                        >
+                    >
 
                         <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
                         <XAxis />
@@ -1129,12 +1222,12 @@ function RootEquation(){
 
                 </div>
 
-                
+
                 <div className='answer-chart'>
                     <label>Answer</label>
                     <LineChart
                         width={1000}
-                        height={600}                
+                        height={600}
                         data={chartAnswer}
                         margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
                     >
@@ -1147,28 +1240,28 @@ function RootEquation(){
                     </LineChart>
 
                 </div>
-            
-            </div>
-            
 
-            <div className='table' style={{textAlign: 'center'}}>
-                
+            </div>
+
+
+            <div className='table' style={{ textAlign: 'center' }}>
+
                 <div className='table-iteration'>
                     <div style={{ height: 1000, width: 1000 }}>
                         {showTable(table)}
                     </div>
                 </div>
-                
-               
-            </div> 
+
+
+            </div>
 
             {/* <SyntaxHighlighter className="code" language="javascript" style={xonokai} showLineNumbers='true' >
                 {codeString+codeString2}
-            </SyntaxHighlighter>         */}            
+            </SyntaxHighlighter>         */}
 
-           
-        </div>     
-        
+
+        </div>
+
     )
 }
 

@@ -8,44 +8,14 @@ import LinearAlgebra from './Course/LinearAlgebra/LinearAlgebra'
 import Polation from './Course/Polation/Polation';
 import Navbar from './components/Navbar'
 import axios from 'axios'
+import LinearRegression from './Course/LinearRegression/LinearRegression';
 
 function App() {
 
-  // const [ token, setToken ] = useState('')
-  // const isfirstRender = useRef(true)
-  // const tokenRef = useRef(token)
-
-  // const login = async () =>  {
-  //   await axios.post('http://localhost:3001/login',{
-  //     email: "s6204062616316@email.kmutnb.ac.th",
-  //     password: "0859150757"
-  //   }).then((res) => {
-  //     const response = res.data
-  //     setToken(response)
-  //     console.log(response)
-  //     console.log("token is ",token)
-  //   })
-  // }
-
-  // useEffect(() => {
-  //   if(isfirstRender.current)
-  //   {
-  //     login()
-  //     isfirstRender.current = false
-  //   }
-  //   else
-  //   {
-  //     tokenRef.current = token
-      
-  //   }
-  // })
-  
   
   return (
-    
-    
-    <>
-      
+        
+    <>  
       <Router>
       <Navbar/>
         <Routes>        
@@ -56,13 +26,15 @@ function App() {
           {/* Course of LinearAlgebra */}
           <Route path='/linear_algebra' element={<LinearAlgebra/>} />
           {/* Course of Polation */}
-          <Route path='/polation' element={<Polation/>} />      
+          <Route path='/polation' element={<Polation/>} />     
+          {/* Course of LinearRegression */}
+          <Route path='/linearRegression' element={<LinearRegression/>} />   
 
         </Routes>
         
       </Router>
     </>
-    
+  
   );
 }
 

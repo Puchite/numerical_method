@@ -1,22 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react'
-import './LinearAlgebra.css'
-import functionPlot from 'function-plot'
+import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import axios from 'axios';
+import { MathJax, MathJaxContext } from 'better-react-mathjax';
+import Desmos from 'desmos';
+import functionPlot from 'function-plot';
+import * as math from 'mathjs';
+import { column, derivative, evaluate, index, json, parse, row } from 'mathjs';
+import React, { useEffect, useRef, useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import axios from 'axios'
-import { parse, derivative, evaluate, json, row, column, index } from 'mathjs';
-import Desmos from 'desmos'
-import * as math from 'mathjs'
-import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import {
-    LineChart,
-    Line,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
+    CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis,
+    YAxis
 } from "recharts";
+import './LinearAlgebra.css';
 
 let e = Math.E
 let epsilon = 0.000001
@@ -69,7 +66,7 @@ function LinearAlgebra() {
             console.log("*This is First Render")
         }
         else {
-            
+
             matrixARef.current = matrixA
             matrixBRef.current = matrixB
             matrixSizeRef.current = matrixSize
@@ -112,7 +109,7 @@ function LinearAlgebra() {
         }
 
         switch (e.target.value) {
-            
+
             case 'cramerRule':
                 setapiProblem(res.cramerRule)
                 break
@@ -198,7 +195,7 @@ function LinearAlgebra() {
         let arrayA = []
         let arrayTemp = []
 
- 
+
 
         if (arrayTemp.length < 2) {
             console.log("Array Temp ", arrayTemp)
@@ -230,32 +227,31 @@ function LinearAlgebra() {
 
             case 'gaussElimination':
                 calGuassElimination(matrixA, matrixB)
-                
+
                 break
 
             case 'gaussJordan':
                 calGuassJordan(matrixA, matrixB)
-                
+
                 break
 
             case 'jacobi':
-                if(checkMatrixTranspose(matrixA) === false) 
-                {
+                if (checkMatrixTranspose(matrixA) === false) {
                     setAnswer("Matrix A is non-symmetric matrix")
                     return
                 }
                 calJacobi(matrixA, matrixB)
-                
+
                 break
 
             case 'gaussSeidel':
                 calGaussSeidel(matrixA, matrixB)
-                
+
                 break
 
             case 'conjugate':
                 calConjugate(matrixA, matrixB)
-                
+
                 break
 
             default:
@@ -277,11 +273,11 @@ function LinearAlgebra() {
 
         for (let column = 0; column < matrixAForm[0].length; column++) {
             let matrixTemp = JSON.parse(matrixA)
-         
+
             for (let row = 0; row < matrixAForm.length; row++) {
                 matrixTemp[row][column] = matrixBForm[row]
             }
-            
+
             arrayX[column] = parseFloat(((math.det(math.matrix(matrixTemp))) / (math.det(math.matrix(matrixAForm)))).toFixed(0))
             dataError.push(arrayX[column])
         }
@@ -430,10 +426,10 @@ function LinearAlgebra() {
                 objAnswer = Object.assign(objAnswer, { ["X" + (i + 1)]: arrayXnew[i] })
                 objError = Object.assign(objError, { ["X" + (i + 1)]: arrayError[i] })
             }
-
+            console.log(dataError)
             dataAnswer.push(objAnswer)
             dataError.push(objError)
-
+            
             arrayX = JSON.parse(JSON.stringify(arrayXnew))
 
             for (let i = 0; i < arrayError.length; i++) {
@@ -489,7 +485,7 @@ function LinearAlgebra() {
                         // console.log(arrayXnew[row])
                     }
                 }
-                arrayXnew[row] = (arrayXnew[row]/divide).toFixed(6)
+                arrayXnew[row] = (arrayXnew[row] / divide).toFixed(6)
                 arrayError[row] = math.abs((arrayXnew[row] - arrayX[row]) / arrayXnew[row]).toFixed(6)
                 arrayX[row] = arrayXnew[row]
             }
@@ -525,7 +521,7 @@ function LinearAlgebra() {
                 setChartError(dataError)
                 arrayX = arrayX.map(index => Number(index))
                 setAnswer(JSON.stringify(arrayX))
-                console.log("Type of arrayX ",typeof(arrayX))
+                console.log("Type of arrayX ", typeof (arrayX))
                 checkAnswer(matrixA, arrayX)
                 break
             }
@@ -563,9 +559,9 @@ function LinearAlgebra() {
             arrayXnew = math.add(arrayX, math.multiply(lambda_k, matrixDForm))
             matrixRnew = math.subtract(math.multiply(matrixAForm, arrayXnew), matrixBForm)
             error = (math.sqrt(math.multiply(math.transpose(matrixRnew), matrixRnew))).toFixed(6)
-            
 
-            alpha_k = (math.multiply(math.transpose(matrixRnew), math.multiply(matrixAForm,matrixDForm)))/(math.multiply(math.transpose(matrixDForm), math.multiply(matrixAForm, matrixDForm)))
+
+            alpha_k = (math.multiply(math.transpose(matrixRnew), math.multiply(matrixAForm, matrixDForm))) / (math.multiply(math.transpose(matrixDForm), math.multiply(matrixAForm, matrixDForm)))
             matrixDnew = math.add(math.multiply(matrixRnew, -1), math.multiply(alpha_k, matrixDForm))
             // console.log("lambda_k: ", lambda_k)
             // console.log("arrayXnew: ", arrayXnew)
@@ -575,7 +571,7 @@ function LinearAlgebra() {
             // console.log("matrixDnew: ", matrixDnew)
             // console.log("------------------")
 
-            
+
 
             if (error < epsilon) {
                 console.log("********************************************")
@@ -583,8 +579,8 @@ function LinearAlgebra() {
                 setChartData(dataAnswer)
                 setChartError(dataError)
                 arrayXnew = arrayXnew.map(index => Number(index.toFixed(6)))
-                
-                console.log("Type of arrayXnew ",typeof(arrayXnew))
+
+                console.log("Type of arrayXnew ", typeof (arrayXnew))
                 checkAnswer(matrixA, arrayXnew)
                 setAnswer(arrayXnew)
                 return
@@ -603,15 +599,15 @@ function LinearAlgebra() {
             let objError = {
                 iteration: round.toString()
             }
-        
+
             for (let i = 0; i < matrixAForm._data.length; i++) {
-    
+
                 objAnswer = Object.assign(objAnswer, { ["X" + (i + 1)]: arrayX._data[i] })
             }
 
             objError = Object.assign(objError, { X1: error })
 
-            
+
 
             // objError = Object.assign(objAnswer, { ["X" + (i + 1)]: arrayX[i] })
 
@@ -619,7 +615,7 @@ function LinearAlgebra() {
             dataAnswer.push(objAnswer)
             dataError.push(objError)
 
-            round = round+1
+            round = round + 1
         }
 
     }
@@ -634,7 +630,7 @@ function LinearAlgebra() {
                             parenthesis: "keep",
                             implicit: "show",
                         }) +
-                    "\\)"}
+                        "\\)"}
                 </MathJax>
             );
         } catch (e) {
@@ -657,21 +653,21 @@ function LinearAlgebra() {
     const inputMatrixA = (matrixSize) => {
 
         var matrixBoxA = [];
-        
+
         for (let row = 0; row < matrixSize.rows; row++) {
             for (let column = 0; column < matrixSize.columns; column++) {
                 matrixBoxA.push(<input id={row + "" + column} type="text" onChange={handleMatrixAInput} disabled={disableInput} />)
             }
             matrixBoxA.push(<br />)
         }
-     
+
         return matrixBoxA
     }
 
     const inputMatrixB = (matrixSize) => {
 
         var matrixBoxB = [];
-        
+
         for (let row = 0; row < matrixSize.rows; row++) {
             matrixBoxB.push(<input id={row} type="text" onChange={handleMatrixBInput} disabled={disableInput} />)
             matrixBoxB.push(<br />)
@@ -713,8 +709,8 @@ function LinearAlgebra() {
         let matrixTranspose = JSON.parse(JSON.stringify(math.transpose(matrixTemp)))
 
         let matrixATemp = JSON.parse(JSON.stringify(matrixTemp))
-        console.log("matrixATemp is ",matrixATemp)
-        console.log("matrixATemp Lenght ",matrixATemp.data.length)
+        console.log("matrixATemp is ", matrixATemp)
+        console.log("matrixATemp Lenght ", matrixATemp.data.length)
         for (let rows = 0; rows < matrixATemp.data.length; rows++) {
             for (let columns = 0; columns < matrixATemp.data[0].length; columns++) {
                 if (matrixATemp.data[rows][columns] !== matrixTranspose.data[rows][columns]) {
@@ -730,21 +726,21 @@ function LinearAlgebra() {
 
     const checkAnswer = (matrixA, answer) => {
 
-        console.log("A ",matrixA)
-        console.log("B ",answer)
+        console.log("A ", matrixA)
+        console.log("B ", answer)
         answer = math.matrix(answer)
-        console.log("Type of MatrixA is ",typeof(matrixA))
-        console.log("Type of MatrixAnswer is ",typeof(answer))
-        console.log("Type of answerForm is ",typeof(answerForm))
+        console.log("Type of MatrixA is ", typeof (matrixA))
+        console.log("Type of MatrixAnswer is ", typeof (answer))
+        console.log("Type of answerForm is ", typeof (answerForm))
         let matrixAForm = math.matrix(JSON.parse(matrixA))
         let matrixAnswerForm = math.matrix(JSON.parse(answer))
 
         let matrixProveAX = math.multiply(matrixAForm, matrixAnswerForm)
         matrixProveAX = matrixProveAX.map(index => Number(index.toFixed(0)))
         setMatrixProve(matrixProveAX)
-        console.log("matrixProve",matrixProve)
+        console.log("matrixProve", matrixProve)
         return
-        
+
     }
     return (
 
@@ -755,23 +751,60 @@ function LinearAlgebra() {
                 <h1>
                     This is Linear Algebra
                 </h1>
+                <div className='select-method-div'>
+                    <FormControl sx={{ m: 1, minWidth: 500 }}>
+                        <InputLabel id="method-select-label"> Method </InputLabel>
+                        <Select
+                            labelId="methodOption"
+                            id="method-select"
+                            value={method}
+                            label="method"
+                            onChange={handleMethod}
+                        >
+                            {methodOption.map((option) =>
+                                <MenuItem value={option.value}> {option.label} </MenuItem>)}
+                        </Select>
+                    </FormControl>
+                </div>
 
-                <label>Method:</label>
+
+                {/* <label>Method:</label>
                 <select onChange={handleMethod}>
                     <option value='none' >Select Method for Solving Equation</option>
-                    {/* {methodOption.map(options => <option key={options.value}>{options.label}</option>)} */}
+                    {methodOption.map(options => <option key={options.value}>{options.label}</option>)}
                     {methodOption.map((options) => <option key={options.value} value={options.value}>{options.label}</option>)}
 
-                </select>
-                <br />
+                </select>   */}
 
-                <label>Problem:</label>
+                <br />
+                <div className='select-problem-div'>
+                    <FormControl sx={{ m: 1, minWidth: 500 }}>
+                        <InputLabel id="problem-select-label"> Problem </InputLabel>
+                        <Select
+                            // defaultValue={null}
+                            labelId="select-problem"
+                            id="problem-select"
+                            value={problem}
+                            label="problem"
+                            onChange={handleProblem}
+                        >
+                            <MenuItem value='Custom'> Custom </MenuItem>
+                            {apiProblem ? apiProblem.map(item =>
+                                <MenuItem value={item.id}>
+                                    <MathJaxContext> MatrixA: {showMatrix(item.matrixA)}  MatrixB: {showMatrix(item.matrixB)}</MathJaxContext>
+                                </MenuItem>) : null}
+                        </Select>
+                    </FormControl>
+                </div>
+
+
+                {/* <label>Problem:</label>
                 <select onChange={handleProblem}>
                     <option defaultValue={"none"} value="none" >Select Equation</option>
                     <option value="Custom">Custom</option>
                     {apiProblem ? apiProblem.map(item => <option key={item.id} >{item.id}</option>) : null}
 
-                </select>
+                </select> */}
 
             </div>
 
@@ -789,17 +822,41 @@ function LinearAlgebra() {
                         <label>Input Matrix Size</label>
 
                         <br />
-                        <label>row:</label>
+                        {/* <label>row:</label>
                         <input type='number'
                             onChange={(e) => setMatrixSize({ ...matrixSize, rows: e.target.value })}
                             disabled={disableInput}
-                        />
+                        /> */}
+                        <div className='input-rows-size'>
+                            <TextField
+                                label='Row'
+                                type='text'
+                                onChange={((event) => setMatrixSize({ ...matrixSize, rows: event.target.value }))}
+                                id='row'
+                                variant="outlined"
+                                disabled={disableInput}
+                                placeholder='Row of Matrix'
+                            />
+                        </div>
 
-                        <label>column:</label>
+
+                        {/* <label>column:</label>
                         <input type='number'
                             onChange={(e) => setMatrixSize({ ...matrixSize, columns: e.target.value })}
                             disabled={disableInput}
-                        />
+                        /> */}
+                        <div className='input-columns-size'>
+
+                            <TextField
+                                label='Column'
+                                type='text'
+                                onChange={((event) => setMatrixSize({ ...matrixSize, columns: event.target.value }))}
+                                id='column'
+                                variant="outlined"
+                                disabled={disableInput}
+                                placeholder='Column of Matrix'
+                            />
+                        </div>
                     </div>
                     <div className='input-matrix'>
                         <div className='input-matrixA'>
@@ -826,7 +883,8 @@ function LinearAlgebra() {
                     <div className='button-submit'>
 
                         <div className='button-submit'>
-                            <input name='submit-button' type="submit" value="Submit" />
+                            {/* <input name='submit-button' type="submit" value="Submit" /> */}
+                            <Button variant="contained" type='submit' value='Submit' > Submit </Button>
                         </div>
 
                     </div>
@@ -840,7 +898,8 @@ function LinearAlgebra() {
 
 
                 <div className='button-clear'>
-                    <button onClick={clearMatrix} disabled={matrixSize.rows < 2 || matrixSize.columns < 2}>Clear Matrix</button>
+                    {/* <button onClick={clearMatrix} disabled={matrixSize.rows < 2 || matrixSize.columns < 2}>Clear Matrix</button> */}
+                    <Button variant="contained" onClick={clearMatrix} disabled={matrixSize.rows < 2 || matrixSize.columns <2 } > Clear Matrix </Button>
                 </div>
 
             </div>
@@ -855,7 +914,7 @@ function LinearAlgebra() {
                     </MathJaxContext>
                 </div>
 
-                <div className='matrixB-div'>    
+                <div className='matrixB-div'>
                     <h2> MatrixB is </h2>
                     <MathJaxContext>
                         {showMatrix(matrixB)}
@@ -873,7 +932,7 @@ function LinearAlgebra() {
                 </div>
 
                 <div className='prove-answer'>
-                    <h2> Prove Answer is </h2>
+                    <h2> Prove Answer is Answer*MatrixB = </h2>
                     <MathJaxContext>
                         {showMatrix(matrixProve)}
                     </MathJaxContext>

@@ -1,6 +1,8 @@
+
 div{
     display: block;
 }
+
 .super_header{
     text-align: center;
     color: black;
@@ -16,15 +18,17 @@ div{
 
 .bg-rooteq{
     
-    background-color: aquamarine;
+    background-color: #AAE9E5;
     height: 20rem;
     border-radius: 5px;
     margin: 3rem;
     text-align: center;
+    justify-content: center;
+    display: flex;
 }
 
-.rooteq-course{
-    margin: left;
+.rooteq-course-div{
+    display: flex;
 }
 
 .bt_root_of_equation, .bt_linear, .bt_polation{
@@ -41,7 +45,7 @@ div{
 
 .bg-linear{
     
-    background-color: hotpink;
+    background-color: #FEB7D3;
     height: 20rem;
     border-radius: 5px;
     margin: 3rem;
@@ -62,7 +66,17 @@ div{
 
 .bg-polation{
     
-    background-color: yellowgreen;
+    /* background-color: #FFEDA9; */
+    background-color: #FDB692;
+    height: 20rem;
+    border-radius: 5px;
+    margin: 3rem;
+    text-align: center;
+}
+
+.bg-linearRegression{
+    
+    background-color: #EACFFF;
     height: 20rem;
     border-radius: 5px;
     margin: 3rem;
