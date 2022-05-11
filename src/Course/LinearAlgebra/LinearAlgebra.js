@@ -656,7 +656,15 @@ function LinearAlgebra() {
 
         for (let row = 0; row < matrixSize.rows; row++) {
             for (let column = 0; column < matrixSize.columns; column++) {
-                matrixBoxA.push(<input id={row + "" + column} type="text" onChange={handleMatrixAInput} disabled={disableInput} />)
+                // matrixBoxA.push(<input id={row + "" + column} type="text" onChange={handleMatrixAInput} disabled={disableInput} />)
+                matrixBoxA.push(<TextField
+                type='number'
+                onChange={handleMatrixAInput}
+                id={row+ "" +column}
+                variant="outlined"
+                disabled={disableInput}
+                placeholder={"["+row+"]["+column+"]"}
+                style={{width:'100px',height:'50px',padding:'10px'}}/>)
             }
             matrixBoxA.push(<br />)
         }
@@ -669,7 +677,15 @@ function LinearAlgebra() {
         var matrixBoxB = [];
 
         for (let row = 0; row < matrixSize.rows; row++) {
-            matrixBoxB.push(<input id={row} type="text" onChange={handleMatrixBInput} disabled={disableInput} />)
+            // matrixBoxB.push(<input id={row} type="text" onChange={handleMatrixBInput} disabled={disableInput} />)
+            matrixBoxB.push(<TextField
+                type='number'
+                onChange={handleMatrixBInput}
+                id={row}
+                variant="outlined"
+                disabled={disableInput}
+                placeholder={"["+row+"]"}
+                style={{width:'100px',height:'50px',padding:'10px'}}/>)
             matrixBoxB.push(<br />)
         }
 

@@ -1,14 +1,12 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Container from '@mui/material/Container'
 import TextField from '@mui/material/TextField'
 import { DataGrid } from '@mui/x-data-grid'
 import axios from 'axios'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import Desmos from 'desmos'
 import * as math from 'mathjs'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis,
     YAxis
@@ -895,6 +893,7 @@ function RootEquation() {
 
     const showTable = (table) => {
         try {
+            console.log(table)
             return <DataGrid
                 rows={table.rowsTable}
                 columns={table.columnsTable}

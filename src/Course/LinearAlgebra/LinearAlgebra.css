@@ -1,48 +1,51 @@
-.input-div{
+.input-div {
     display: contents;
     text-align: center;
     justify-content: center;
 }
 
-.input-div-sizeMatrix{
+.input-div-sizeMatrix {
     display: contents;
     text-align: center;
     justify-content: center;
 }
 
-.input-matrix{
-    display: flex;    
+.input-matrix {
+    display: flex;
     text-align: center;
     justify-content: center;
-    padding: 5px;
+    padding: 10px;
 }
 
-.content{
+.content {
     display: flex;
     justify-content: center;
 }
 
-.input-matrixA, .input-matrixB, .answer-div, .prove-answer{
+.input-matrixA,
+.input-matrixB,
+.answer-div,
+.prove-answer {
     justify-content: center;
     text-align: center;
     padding: 10px;
 }
 
-.button-div{
+.button-div {
     display: contents;
     justify-content: center;
     text-align: center;
     padding: 5px;
 }
 
-.button-clear, .button-submit{
+.button-clear,
+.button-submit {
     padding: 5px;
 }
 
 
-.chart{
+.chart {
     display: contents;
     text-align: center;
     justify-content: center;
 }
-

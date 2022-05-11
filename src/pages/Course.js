@@ -94,7 +94,25 @@ function Course() {
                      
                     </div>
 
-                </div>                 
+                </div>           
+
+                <div className='bg-numericalDifferentiation'>
+
+                    <div className='numericalDifferentiation-course'>
+                        
+                        <h2 style={{padding:'2rem'}}>    
+                            Linear Regression
+                        </h2>
+                        
+                        <p style={{padding:'2rem'}}>
+                            This is Linear Regression
+                        </p>
+                        
+                        <Link to="./numericalDifferentiation" ><Button variant="contained" className='bt_root_of_equation' style={{backgroundColor: '#6CBB7A'}} > View Numerical Differentiation Content </Button></Link>
+                     
+                    </div>
+
+                </div>           
                 
 
 

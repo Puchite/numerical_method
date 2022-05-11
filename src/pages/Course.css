@@ -67,7 +67,7 @@ div{
 .bg-polation{
     
     /* background-color: #FFEDA9; */
-    background-color: #FDB692;
+    background-color: #ADD4FF;
     height: 20rem;
     border-radius: 5px;
     margin: 3rem;
@@ -77,6 +77,15 @@ div{
 .bg-linearRegression{
     
     background-color: #EACFFF;
+    height: 20rem;
+    border-radius: 5px;
+    margin: 3rem;
+    text-align: center;
+}
+
+.bg-numericalDifferentiation{
+    
+    background-color: #FDB692;
     height: 20rem;
     border-radius: 5px;
     margin: 3rem;

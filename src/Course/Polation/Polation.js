@@ -60,7 +60,7 @@ const columnsTable = [
         headerName: 'X',
         width: 150,
         type: 'number',
-        editable: false,
+        editable: true,
         sortable: false,
     },
     {
@@ -68,7 +68,7 @@ const columnsTable = [
         headerName: 'Y',
         width: 150,
         type: 'number',
-        editable: false,
+        editable: true,
         sortable: false,
     }
 ];
@@ -79,6 +79,8 @@ function Polation() {
     const [left, setLeft] = useState('-10')
     const [right, setRight] = useState('10')
     const [x, setX] = useState('')
+    const [xCustom, setXCustom] = useState('')
+    const [yCustom, setYCustom] = useState('')
     const [y, setY] = useState('')
     const [numberOfX, setNumberOfX] = useState(0)
     const [findX, setfindX] = useState(0)
@@ -89,8 +91,9 @@ function Polation() {
             x: '',
             y: ''
         }
-    ])
+    ]);
 
+    
     const [equation, setEquation] = useState('')
     const [answer, setAnswer] = useState(0)
     const [dataError, setDataError] = useState([])
@@ -223,6 +226,8 @@ function Polation() {
                     y: ''
                 }
             ])
+
+
         }
         else {
             setDisableinput(true)
@@ -247,45 +252,29 @@ function Polation() {
         setfindX(e.target.value)
     }
 
+    const handleNumberOfX = (e) => {
+        setNumberOfX(e.target.value)
+        setTableInput(e.target.value)
+
+        setX(Array(Number(e.target.value)).fill(0))
+        setY(Array(Number(e.target.value)).fill(0))
+
+        setXCustom(Array(Number(e.target.value)).fill(0))
+        setYCustom(Array(Number(e.target.value)).fill(0))
+    }
+
     const handleSubmit = (e) => {
 
         e.preventDefault();
 
         if (customInput === true) {
             setProblem(equation)
-
             callMethodCustom(method)
-
-            try {
-                console.log('equation:' + equation + ' answer: ' + answer)
-                console.log("tempAnswer: " + tempAnswer)
-                let point = "(" + tempAnswer + ",0)"
-
-                calculator.setExpression({ id: 'graph1', latex: equation.replace(/\(/g, '').replace(/\)/g, '') })
-                calculator.setExpression({ id: 'graph2', latex: point });
-
-            } catch (error) {
-                console.log("update Plot Error")
-            }
 
         }
         else {
             callMethod(method)
-
-            try {
-                console.log('equation:' + problem + ' answer: ' + answer)
-                let point = "(" + tempAnswer.toFixed(6) + ",0)"
-
-                calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g, '').replace(/\)/g, '') })
-                calculator.setExpression({ id: 'graph2', latex: point })
-
-                console.log(dataError)
-
-            } catch (error) {
-                console.log("update Plot Error")
-            }
         }
-
 
     }
 
@@ -314,10 +303,13 @@ function Polation() {
 
     function callMethodCustom(method) {
         switch (method) {
-            case '1':
+            case 'newtonDivide':
+                tempAnswer = calnewtonDivide(x, y)
+                setAnswer(tempAnswer)
                 break
 
-            case '2':
+            case 'lagrange':
+                calLagrange(x, y, findX)
                 break
 
             case '3':
@@ -396,6 +388,18 @@ function Polation() {
         }
     };
 
+    const setTableInput = (length) => {
+        try {
+            let obj = []
+            for (let index = 1; index <= length; index++) {
+                obj.push({ id: index, x: 0, y: 0 })
+            }
+
+            setRowTable(obj)
+        } catch (error) {
+
+        }
+    }
     return (
 
         <div className='entire_page'>
@@ -478,18 +482,11 @@ function Polation() {
                 <div className='input-div'>
 
                     <div className='equation-input-div'>
-                        {/* <label>number of X </label>
-                            <input 
-                                type="number" 
-                                onChange={handleEquationInput} 
-                                disabled={disableInput} 
-                                placeholder='equation'
-                            /> */}
 
                         <TextField
                             label='Number of X'
                             type='number'
-                            onChange={((e) => setNumberOfX(...numberOfX, e.target.value))}
+                            onChange={handleNumberOfX}
                             id='numberofX'
                             variant="outlined"
                             disabled={disableInput}
@@ -498,19 +495,13 @@ function Polation() {
                     </div>
 
                     <div className='x-input-div'>
-                        {/* <label>Point of X:</label>
-                            <input 
-                                type="number" 
-                                onChange={handlefindX} 
-                                placeholder='X'
-                            /> */}
                         <TextField
                             label='Point of X'
                             type='number'
-                            onChange={handleEquationInput}
+                            onChange={handlefindX}
                             id='pointofX'
                             variant="outlined"
-                            disabled={disableInput}
+                            // disabled={disableInput}
                             placeholder='Point of X'
                         />
                     </div>
@@ -526,34 +517,84 @@ function Polation() {
 
             <br />
 
-            <div className='content' style={{ textAlign: 'center',justifyContent: 'center' }}>
+            <div className='content' style={{ textAlign: 'center', justifyContent: 'center' }}>
 
                 <div className='problem-div'>
-                    <div style={{ height: 400, width: '100%', justifyContent:'center' }}>
 
+
+                    <div style={{ height: 400, width: '100%', justifyContent: 'center' }}>
                         <DataGrid
+
                             rows={rowTable}
                             columns={columnsTable}
                             pageSize={10}
                             rowsPerPageOptions={[10]}
                             checkboxSelection
-                            onSelectionModelChange={(newSelection) => {
-                                let arrX = []
-                                let arrY = []
-                                for (let index in newSelection) {
-                                    arrX.splice(index, 0, apiProblem[problem - 1].x[newSelection[index]])
-                                    arrY.splice(index, 0, apiProblem[problem - 1].y[newSelection[index]])
-                                }
+                            onCellEditCommit={event => {
+                                console.log(event.field,": ",event.value)
+                                if(event.field === 'x')
+                                {
+                                    let newX = JSON.parse(JSON.stringify(xCustom))                
+                                    newX[event.id-1] = event.value
 
-                                setX(arrX)
-                                setY(arrY)
-                                setSelection(newSelection)
+                                    setXCustom(newX)
+
+                                }
+                                else if(event.field === 'y')
+                                {
+                                    let newY = JSON.parse(JSON.stringify(yCustom))
+                                    newY[event.id-1] = event.value
+
+                                    setYCustom(newY)
+                                }
+                            }}
+                            
+                            onSelectionModelChange={(newSelection) => {
+
+                                if(problem === 'Custom')
+                                {
+                                    let arrX = []
+                                    let arrY = []
+                                    
+                                    for (let index in newSelection) {
+                                        console.log("xCustom: ",xCustom[newSelection[index]-1])
+                                        arrX.splice(index, 0, xCustom[newSelection[index]-1])
+                                        arrY.splice(index, 0, yCustom[newSelection[index]-1])
+                                    }
+
+                                    setX(arrX)
+                                    setY(arrY)
+                                    setSelection(newSelection)
+                                }
+                                else
+                                {
+                                    let arrX = []
+                                    let arrY = []
+
+                                    for (let index in newSelection) {
+                                        arrX.splice(index, 0, apiProblem[problem - 1].x[newSelection[index]])
+                                        arrY.splice(index, 0, apiProblem[problem - 1].y[newSelection[index]])
+                                    }
+
+                                    setX(arrX)
+                                    setY(arrY)
+                                    setSelection(newSelection)
+                                }
+                                
 
                             }}
                             selectionModel={selection}
-                            editMode="row"
                         />
                     </div>
+                    <div className='showProblem'>
+                            <div className='showX'>
+                                <h2>{JSON.stringify(x)}</h2>
+                            </div>
+                            <div className='showY'>
+                                <h2>{JSON.stringify(y)}</h2>
+                            </div>
+                    </div>
+
                 </div>
 
                 <div className='answer-div'>

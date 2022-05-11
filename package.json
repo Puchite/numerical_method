@@ -36,16 +36,12 @@
     "recharts": "^2.1.9",
     "semantic-ui-react": "^2.1.1",
     "web-vitals": "^2.1.0"
-  },
+  }, 
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start" : "npm-run-all -p start-ts server",
-    "start-ts": "react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "json-server --watch --port 3001 db.json -m ./node_modules/json-server-auth -r ./routes.json "
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
