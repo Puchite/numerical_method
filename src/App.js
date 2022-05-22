@@ -7,8 +7,9 @@ import RootEquation from './Course/RootOfEquation/RootEquation';
 import LinearAlgebra from './Course/LinearAlgebra/LinearAlgebra' 
 import Polation from './Course/Polation/Polation';
 import Navbar from './components/Navbar'
-import axios from 'axios'
 import LinearRegression from './Course/LinearRegression/LinearRegression';
+import NumericalDifferentiation from './Course/NumericalDifferentiation/NumericalDifferentiation';
+import OrdinaryDifferentiation from './Course/OrdinaryDifferentiation/OrdinaryDifferentiation';
 
 function App() {
 
@@ -29,6 +30,10 @@ function App() {
           <Route path='/polation' element={<Polation/>} />     
           {/* Course of LinearRegression */}
           <Route path='/linearRegression' element={<LinearRegression/>} />   
+          {/* Course of Numerical Integration and Diffrerentiation */}
+          <Route path='/numericalDifferentiation' element={<NumericalDifferentiation/>} />  
+          {/* Course of Diffrerentiation and Ordinary Differentiation */}
+          <Route path='/ordinaryDifferentiation' element={<OrdinaryDifferentiation/>} />  
 
         </Routes>
         

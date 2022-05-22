@@ -25,7 +25,7 @@ function Course() {
                         <div className='rooteq-course'>
 
                             <h2 style={{padding:'2rem'}}>    
-                                Root of Equation
+                                ROOT OF EQUATIONS
                             </h2>
                         
                             <p style={{padding:'2rem'}}>
@@ -46,8 +46,8 @@ function Course() {
                 <div className='bg-linear'>
 
                     <div className='linear-course'>
-                        <h2 style={{padding:'2rem'}}>    
-                            Linear Algebra
+                        <h2 style={{padding:'2rem'}}>                                
+                            LINEAR ALGEBRA
                         </h2>
                         
                         <p style={{padding:'2rem'}}>
@@ -65,7 +65,7 @@ function Course() {
                     <div className='polation-course'>
                         
                         <h2 style={{padding:'2rem'}}>    
-                            Polation
+                            INTERPOLATION and EXTERPOLATION 
                         </h2>
                         
                         <p style={{padding:'2rem'}}>
@@ -82,8 +82,8 @@ function Course() {
 
                     <div className='linearRegression-course'>
                         
-                        <h2 style={{padding:'2rem'}}>    
-                            Linear Regression
+                        <h2 style={{padding:'2rem'}}>                                
+                            LINEAR REGRESSION
                         </h2>
                         
                         <p style={{padding:'2rem'}}>
@@ -101,18 +101,36 @@ function Course() {
                     <div className='numericalDifferentiation-course'>
                         
                         <h2 style={{padding:'2rem'}}>    
-                            Linear Regression
+                            NUMERICAL INTEGRATION AND DIFFERENTIATION
                         </h2>
                         
                         <p style={{padding:'2rem'}}>
-                            This is Linear Regression
+                            This is Numerical Integration and Diffrerentiation
                         </p>
                         
                         <Link to="./numericalDifferentiation" ><Button variant="contained" className='bt_root_of_equation' style={{backgroundColor: '#6CBB7A'}} > View Numerical Differentiation Content </Button></Link>
                      
                     </div>
 
-                </div>           
+                </div>
+
+                <div className='bg-ordinaryDifferentiation'>
+
+                    <div className='ordinaryDifferentiation-course'>
+                        
+                        <h2 style={{padding:'2rem'}}>    
+                            DIFFERENTIATION and ORDINARY DIFFERENTIAL EQUATIONS
+                        </h2>
+                        
+                        <p style={{padding:'2rem'}}>
+                            This is Diffrerentiation and Ordinary Differentiation Course
+                        </p>
+                        
+                        <Link to="./ordinaryDifferentiation" ><Button variant="contained" className='bt_root_of_equation' style={{backgroundColor: '#6CBB7A'}} > View Ordinary Differentiation Content </Button></Link>
+                     
+                    </div>
+
+                </div>                                                          
                 
 
 
