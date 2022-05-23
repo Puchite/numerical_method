@@ -28,10 +28,10 @@ jobs:
         - name: Install packages
           run: yarn install --frozen-lockfile
 
-        - name: Test
-          run: yarn test
-          env:
-            CI: true
+#         - name: Test
+#           run: yarn test
+#           env:
+#             CI: true
             
         - name: Checkout 
           uses: actions/checkout@v2
