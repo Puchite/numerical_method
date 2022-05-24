@@ -5,6 +5,10 @@ import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import * as math from 'mathjs';
 import { column, derivative, evaluate, index, json, parse, row } from 'mathjs';
 import React, { useEffect, useRef, useState } from 'react';
+import {
+    CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis,
+    YAxis
+} from "recharts"
 import './LinearAlgebra.css';
 
 let e = Math.E
@@ -771,7 +775,7 @@ function LinearAlgebra() {
                             onChange={handleMethod}
                         >
                             {methodOption.map((option) =>
-                                <MenuItem value={option.value}> {option.label} </MenuItem>)}
+                                <MenuItem data-testid="select-method" value={option.value}> {option.label} </MenuItem>)}
                         </Select>
                     </FormControl>
                 </div>

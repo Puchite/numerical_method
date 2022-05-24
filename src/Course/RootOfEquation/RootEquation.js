@@ -924,6 +924,9 @@ function RootEquation() {
                                 value={method}
                                 label="method"
                                 onChange={handleMethod}
+                                inputProps={{
+                                    "data-testid" : "select-method"
+                                }}
                             >
                                 {methodOption.map((options) =>
 
@@ -932,7 +935,7 @@ function RootEquation() {
                             </Select>
                         </FormControl>
                     </div>
-
+                            
                 </div>
 
 
@@ -955,6 +958,9 @@ function RootEquation() {
                                 value={problem}
                                 label="problem"
                                 onChange={handleProblem}
+                                inputProps={{
+                                    "data-testid" : "select-problem"
+                                }}
                             >
                                 <MenuItem value='Custom'> Custom </MenuItem>
                                 {apiProblem ? apiProblem.map(item =>
@@ -966,6 +972,7 @@ function RootEquation() {
                         </FormControl>
                     </div>
                 </div>
+
 
 
                 {/* <label>Problem:</label>
@@ -990,6 +997,10 @@ function RootEquation() {
 
                                 <div className='equation-input-div'>
                                     <TextField
+                                        inputProps={{
+                                            "data-testid": "equation-input"
+                                        }}
+
                                         label='Equation'
                                         type='text'
                                         onChange={handleEquationInput}
@@ -1009,6 +1020,9 @@ function RootEquation() {
                                 <div className='left-input-box'>
 
                                     <TextField
+                                        inputProps={{
+                                            "data-testid": "left-input"
+                                        }}
                                         label='Left'
                                         type='text'
                                         onChange={handleLeftInput}
@@ -1026,6 +1040,9 @@ function RootEquation() {
 
                                 <div className='right-input-box'>
                                     <TextField
+                                        inputProps={{
+                                            "data-testid": "right-input"
+                                        }}
                                         label='Right'
                                         type='text'
                                         onChange={handleRightInput}
@@ -1043,7 +1060,9 @@ function RootEquation() {
 
                                 <div className='button'>
                                     {/* <input type="submit" value="Submit" /> */}
-                                    <Button variant="contained" type='submit' value='Submit' > Submit </Button>
+                                    <Button inputProps={{
+                                        "data-testid": "submit-button"
+                                    }} variant="contained" type='submit' value='Submit' > Submit </Button>
                                 </div>
 
 
@@ -1112,7 +1131,9 @@ function RootEquation() {
 
                         <div className='problem-div'>
                             <div className='problem'>
-
+                                <h2>
+                                    Method is {method}
+                                </h2>
                                 <h2> Equation
                                     <MathJaxContext>
                                         {showProblem(problem)}

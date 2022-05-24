@@ -8,7 +8,7 @@ function Course() {
     return (
 
         <div className='entire_page'>
-            
+            <h2 style={{justifyContent: 'center',textAlign: 'center'}}>Numerical Method</h2>
             {/* <div className='super_header'>
                     <h1 className='course_header'>
                         Course
