@@ -1,24 +1,16 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import {BrowserRouter as Router} from 'react-router-dom';
 import App from './App';
-import userEvent from '@testing-library/user-event';
+import axios from "axios"
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
 
-describe("<App />", () => {
- 
-  test('pass equation', () => {
-    render(<App />);
- 
-    const inputEl = screen.getByTestId("equation");
-    userEvent.type(inputEl, "x^4-13");
- 
-    expect(screen.getByTestId("equation")).toHaveValue("x^4-13");
-    expect(screen.getByTestId("answer")).toBeInTheDocument();
-    expect(screen.queryByTestId("answer").textContent).toEqual("1.898829");
-  });
- 
+test('Is All Data Loaded', async () => {
+  render(
+    <Router>
+      <App />
+    </Router>
+  );
+  await waitFor(()=>{expect(screen.queryByText(/Loading/i)).not.toBeInTheDocument()})
+  expect(screen.getByTestId("ShowData")).toBeInTheDocument();
 });

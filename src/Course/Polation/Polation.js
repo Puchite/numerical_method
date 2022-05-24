@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
-import functionPlot from 'function-plot'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from 'axios'
 import * as math from 'mathjs'
-import Desmos from 'desmos'
 import { Chart } from 'chart.js'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import { DataGrid } from '@mui/x-data-grid';
@@ -28,8 +24,6 @@ import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material
 let e = Math.E
 let epsilon = 0.000001
 const baseUrl = 'http://localhost:3001/root-equation/'
-let elt = document.getElementById('elt')
-let calculator = Desmos.GraphingCalculator(elt);
 
 // ChartJS.register(
 //     LineElement,
@@ -123,10 +117,6 @@ function Polation() {
 
         if (isfirstRender.current) {
             getData()
-
-            elt = document.getElementById('elt')
-            calculator = Desmos.GraphingCalculator(elt);
-            calculator.setExpression({ id: 'graph2', latex: 0 })
             isfirstRender.current = false
             console.log("*This is First Render")
         }

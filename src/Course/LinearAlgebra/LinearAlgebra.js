@@ -2,17 +2,9 @@ import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { MathJax, MathJaxContext } from 'better-react-mathjax';
-import Desmos from 'desmos';
-import functionPlot from 'function-plot';
 import * as math from 'mathjs';
 import { column, derivative, evaluate, index, json, parse, row } from 'mathjs';
 import React, { useEffect, useRef, useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {
-    CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis,
-    YAxis
-} from "recharts";
 import './LinearAlgebra.css';
 
 let e = Math.E

@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import functionPlot from 'function-plot'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import axios from 'axios'
 import * as math from 'mathjs'
-import Desmos from 'desmos'
 import { Chart } from 'chart.js'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import { DataGrid } from '@mui/x-data-grid';
