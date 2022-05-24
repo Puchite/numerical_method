@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField'
 import { DataGrid } from '@mui/x-data-grid'
 import axios from 'axios'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
+import Desmos from 'desmos'
 import * as math from 'mathjs'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -13,6 +14,8 @@ import {
 import './RootEquation.css'
 
 let epsilon = 0.000001
+let elt = document.getElementById('elt')
+let calculator = Desmos.GraphingCalculator(elt)
 let token;
 
 const methodOption = [
@@ -101,6 +104,15 @@ function RootEquation() {
         if (isfirstRender.current) {
             login();
             getData();
+            elt = document.getElementById('elt')
+            calculator = Desmos.GraphingCalculator(elt,
+                {
+                    keypad: false,
+                    settingsMenu: false,
+                    expressionsTopbar: false,
+                    expressions: false
+                });
+            calculator.setExpression({ id: 'graph2', latex: 0 })
             isfirstRender.current = false
             console.log("*This is First Render")
         }
@@ -242,6 +254,9 @@ function RootEquation() {
                 console.log("tempAnswer: " + tempAnswer)
                 let point = "(" + tempAnswer + ",0)"
 
+                calculator.setExpression({ id: 'graph1', latex: equation.replace(/\(/g, '').replace(/\)/g, '') })
+                calculator.setExpression({ id: 'graph2', latex: point });
+
             } catch (error) {
                 console.log("update Plot Error")
             }
@@ -255,6 +270,11 @@ function RootEquation() {
                 let point = "(" + tempAnswer + ",0)";
                 let xLeft = "x=" + left;
                 let xRight = "x=" + right;
+                calculator.setExpression({ id: 'graph1', latex: problem.replace(/\(/g, '').replace(/\)/g, '') });
+                calculator.setExpression({ id: 'graph2', latex: point });
+                calculator.setExpression({ id: 'graph3', latex: xLeft });
+                calculator.setExpression({ id: 'graph4', latex: xRight });
+
 
                 if (method === 'bisection' || method === 'falsePosition');
                 // eslint-disable-next-line no-lone-blocks

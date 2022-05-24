@@ -758,6 +758,7 @@ function LinearAlgebra() {
         return
 
     }
+    
     return (
 
         <div className='entire_page'>

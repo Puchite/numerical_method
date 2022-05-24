@@ -20,11 +20,39 @@ import {
 import { TextField } from '@mui/material';
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
+let tempAnswer = [];
 const methodOption = [
     { value: "linear", label: "Linear Regression" },
     { value: "polynomial", label: "Polynomial Regression" },
     { value: "multiple", label: "Multiple Regression" },
 ]
+
+const columnsTable = [
+    {
+        field: 'id',
+        headerName: 'ID',
+        width: 70,
+        type: 'number',
+        editable: false,
+        sortable: false,
+    },
+    {
+        field: 'x',
+        headerName: 'X',
+        width: 150,
+        type: 'number',
+        editable: true,
+        sortable: false,
+    },
+    {
+        field: 'y',
+        headerName: 'Y',
+        width: 150,
+        type: 'number',
+        editable: true,
+        sortable: false,
+    }
+];
 
 let token;
 const login = async () => {
@@ -55,10 +83,10 @@ function LinearRegression() {
         }
     ]);
 
-
+    
     const [equation, setEquation] = useState('')
-    const [answer, setAnswer] = useState(0)
-    const [dataError, setDataError] = useState([])
+    const [answer, setAnswer] = useState([0])
+    
     const [chartData, setChartData] = useState([])
     const [chartAnswer, setChartAnswer] = useState([])
     const [chartOptions, setChartOptions] = useState([{}])
@@ -75,6 +103,7 @@ function LinearRegression() {
     const problemRef = useRef(problem)
     const chartDataRef = useRef(chartData)
     const rowTableRef = useRef(rowTable)
+    const answerRef = useRef(answer);
     const xRef = useRef(x)
     const yRef = useRef(y)
     const findXRef = useRef(findX)
@@ -86,25 +115,16 @@ function LinearRegression() {
             getData();
         }
         else {
+            answerRef.current = answer;
             equationRef.current = equation
             problemRef.current = problem
             chartDataRef.current = chartData
         }
 
-    }, [equation, problem, chartData, chartAnswer])
+    }, [equation, problem, chartData, chartAnswer, answer])
 
 
     const getData = async () => {
-        // await axios.get('http://localhost:3001/root-equation')
-        // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
-        //     .then((res) => {
-        //         console.log('fetch success data is', res.data)
-        //         const response = res.data
-        //         setRes(response)
-
-        //     }, (error) => {
-        //         console.log(error)
-        //     })
 
         console.log("ACCESS TOKEN ", token)
         await axios.get('http://localhost:3001/linearRegression', {
@@ -152,16 +172,164 @@ function LinearRegression() {
     const handleProblem = (e) => {
 
         setProblem(e.target.value)
-
         if (e.target.value === 'Custom') {
             setDisableinput(false)
             setCustominput(true)
+            setRowTable([
+                {
+                    id: '',
+                    x: '',
+                    y: ''
+                }
+            ])
+
+
         }
         else {
             setDisableinput(true)
             setCustominput(false)
+            setX(apiProblem[e.target.value - 1].x)
+            setY(apiProblem[e.target.value - 1].fx)
+            console.log(apiProblem[e.target.value - 1].x)
+            let obj = []
+            for (let index = 0; index < apiProblem[e.target.value - 1].x.length; index++) {
+                console.log("X", apiProblem[e.target.value - 1].x[index])
+                console.log("Y", apiProblem[e.target.value - 1].y[index])
+                obj.push({ id: index, x: apiProblem[e.target.value - 1].x[index], y: apiProblem[e.target.value - 1].y[index] })
+            }
+
+            setRowTable(obj)
+            console.log(rowTable)
         }
 
+    }
+
+    const handlefindX = (e) => {
+        setfindX(e.target.value)
+    }
+
+    const handleNumberOfX = (e) => {
+        setNumberOfX(e.target.value)
+        setTableInput(e.target.value)
+
+        setX(Array(Number(e.target.value)).fill(0))
+        setY(Array(Number(e.target.value)).fill(0))
+
+        setXCustom(Array(Number(e.target.value)).fill(0))
+        setYCustom(Array(Number(e.target.value)).fill(0))
+    }
+
+    const handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        if (customInput === true) {
+            setProblem(equation)
+            callMethodCustom(method)
+
+        }
+        else {
+            callMethod(method)
+        }
+
+    }
+
+    function callMethod(method) {
+        switch (method) {
+            case 'linear':
+                tempAnswer = linear(x, y);
+                // setAnswer(tempAnswer)
+                console.log("tempAnswer ",tempAnswer);
+                break
+
+            case 'polynomial':
+                polynomial(x, y);
+                break
+
+            case '1':
+                break
+
+            case '2':
+                break
+
+            default:
+                console.log('No Method Found')
+
+        }
+    }
+
+    function callMethodCustom(method) {
+        switch (method) {
+            case 'linear':
+                tempAnswer = linear(x, y)
+                setAnswer(tempAnswer)
+                break
+
+            case 'lagrange':
+                polynomial(x, y);
+                break
+
+            case '3':
+                break
+
+            case '4':
+                break
+
+            default:
+                console.log('No Method Found')
+
+        }
+    }
+    
+    function linear(x, y){
+        var matrixX = JSON.parse(JSON.stringify(x));
+        var matrixY = JSON.parse(JSON.stringify(y));
+
+        var sumMatrixX = math.sum(matrixX);
+        var sumMatrixY = math.sum(matrixY);
+        var matrixXY = math.sum(math.multiply(matrixX, matrixY));
+        var matrixPowX = math.sum(math.multiply(matrixX, matrixX))
+        var matrixA = [[matrixX.length, sumMatrixX], [sumMatrixX, matrixPowX]];
+        var matrixB = [sumMatrixY, matrixXY];
+        var Xnew = [];  
+        var temp;
+        let ans = [];
+
+        for(let i=0; i < matrixA.length; i++)
+        {
+            Xnew = [[matrixX.length, sumMatrixX], [sumMatrixX, matrixPowX]];
+            for(let j=0; j<matrixA.length; j++)
+            {
+                Xnew[j][i] = matrixB[j];
+            }
+
+            temp = (math.det(Xnew) / math.det(matrixA));
+
+            let obj = {};
+            Object.assign(obj, {["round"+i]:temp});
+            ans.push(obj);            
+        }
+        setAnswer(ans);
+
+        return;
+
+    }
+
+    function polynomial(x, y){
+
+    }
+
+    const setTableInput = (length) => {
+        try {
+            let obj = []
+            for (let index = 1; index <= length; index++) {
+                obj.push({ id: index, x: 0, y: 0 })
+            }
+
+            setRowTable(obj)
+        } catch (error) {
+
+        }
     }
 
     const showProblem = (eq) => {
@@ -230,7 +398,7 @@ function LinearRegression() {
 
     </select> */}
 
-                <div className='select-problem-div'>                    
+                <div className='select-problem-div'>
                     <div className='select-problem'>
                         <FormControl sx={{ m: 1, minWidth: 500 }}>
                             <InputLabel id="problem-select-label"> Problem </InputLabel>
@@ -241,10 +409,10 @@ function LinearRegression() {
                                 value={problem}
                                 label="problem"
                                 onChange={handleProblem}
-                            >                                
+                            >
                                 <MenuItem value='Custom'> Custom </MenuItem>
                                 {apiProblem ? apiProblem.map(item =>
-                                    <MenuItem value={item.id}>                                        
+                                    <MenuItem value={item.id}>
                                         {
                                             ((method === 'linear') || (method === 'polynomial')) && (
                                                 <MathJaxContext>x:{showProblem(JSON.stringify(item.x))} y:{showProblem(JSON.stringify(item.fx))}</MathJaxContext>
@@ -252,10 +420,10 @@ function LinearRegression() {
                                         }
                                         {
                                             ((method === 'multiple')) && (
-                                                <MathJaxContext> x1:{showProblem(JSON.stringify(item.x1))} 
-                                                                 x2:{showProblem(JSON.stringify(item.x2))}
-                                                                 x3:{showProblem(JSON.stringify(item.x3))}
-                                                                 y:{showProblem(JSON.stringify(item.y))}
+                                                <MathJaxContext> x1:{showProblem(JSON.stringify(item.x1))}
+                                                    x2:{showProblem(JSON.stringify(item.x2))}
+                                                    x3:{showProblem(JSON.stringify(item.x3))}
+                                                    y:{showProblem(JSON.stringify(item.y))}
                                                 </MathJaxContext>
                                             )
                                         }
@@ -271,16 +439,33 @@ function LinearRegression() {
             <br />
             {/* <div> Problem is : {problem} </div> */}
 
-            <form className='form'>
+            <form className='form' onSubmit={handleSubmit}>
 
                 <div className='input-div'>
 
                     <div className='equation-input-div'>
 
+                        <TextField
+                            label='Number of X'
+                            type='number'
+                            onChange={handleNumberOfX}
+                            id='numberofX'
+                            variant="outlined"
+                            disabled={disableInput}
+                            placeholder='Number of X'
+                        />
                     </div>
 
                     <div className='x-input-div'>
-
+                        <TextField
+                            label='Point of X'
+                            type='number'
+                            onChange={handlefindX}
+                            id='pointofX'
+                            variant="outlined"
+                            // disabled={disableInput}
+                            placeholder='Point of X'
+                        />
                     </div>
 
                     <div className='button-submit'>
@@ -300,21 +485,82 @@ function LinearRegression() {
 
 
                     <div style={{ height: 400, width: '100%', justifyContent: 'center' }}>
+                        <DataGrid
 
+                            rows={rowTable}
+                            columns={columnsTable}
+                            pageSize={10}
+                            rowsPerPageOptions={[10]}
+                            checkboxSelection
+                            onCellEditCommit={event => {
+                                console.log(event.field,": ",event.value)
+                                if(event.field === 'x')
+                                {
+                                    let newX = JSON.parse(JSON.stringify(xCustom))                
+                                    newX[event.id-1] = event.value
+
+                                    setXCustom(newX)
+
+                                }
+                                else if(event.field === 'y')
+                                {
+                                    let newY = JSON.parse(JSON.stringify(yCustom))
+                                    newY[event.id-1] = event.value
+
+                                    setYCustom(newY)
+                                }
+                            }}
+                            
+                            onSelectionModelChange={(newSelection) => {
+
+                                if(problem === 'Custom')
+                                {
+                                    let arrX = []
+                                    let arrY = []
+                                    
+                                    for (let index in newSelection) {
+                                        console.log("xCustom: ",xCustom[newSelection[index]-1])
+                                        arrX.splice(index, 0, xCustom[newSelection[index]-1])
+                                        arrY.splice(index, 0, yCustom[newSelection[index]-1])
+                                    }
+
+                                    setX(arrX)
+                                    setY(arrY)
+                                    setSelection(newSelection)
+                                }
+                                else
+                                {
+                                    let arrX = []
+                                    let arrY = []
+
+                                    for (let index in newSelection) {
+                                        arrX.splice(index, 0, apiProblem[problem - 1].x[newSelection[index]])
+                                        arrY.splice(index, 0, apiProblem[problem - 1].y[newSelection[index]])
+                                    }
+
+                                    setX(arrX)
+                                    setY(arrY)
+                                    setSelection(newSelection)
+                                }
+                                
+
+                            }}
+                            selectionModel={selection}
+                        />
                     </div>
                     <div className='showProblem'>
-                        <div className='showX'>
-                            <h2>{JSON.stringify(x)}</h2>
-                        </div>
-                        <div className='showY'>
-                            <h2>{JSON.stringify(y)}</h2>
-                        </div>
+                            <div className='showX'>
+                                <h2>{JSON.stringify(x)}</h2>
+                            </div>
+                            <div className='showY'>
+                                <h2>{JSON.stringify(y)}</h2>
+                            </div>
                     </div>
 
                 </div>
 
                 <div className='answer-div'>
-                    <h2> answer is Y = {answer} </h2>
+                    <h2> answer is = {JSON.stringify(answer)} </h2>
                 </div>
 
             </div>
