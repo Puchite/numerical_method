@@ -136,7 +136,6 @@ function RootEquation() {
                 console.log(error)
             })
 
-        console.log("ACCESS TOKEN ", token)
         await axios.get('http://localhost:3001/root-equation', {
             headers: {
                 "Authorization": `Bearer ${token.accessToken}`
@@ -919,6 +918,7 @@ function RootEquation() {
                             <InputLabel id="method-select-label"> Method </InputLabel>
                             <Select
                                 // defaultValue={null}
+                                aria-label='method'
                                 labelId="select-method"
                                 id="method-select"
                                 value={method}
@@ -958,9 +958,7 @@ function RootEquation() {
                                 value={problem}
                                 label="problem"
                                 onChange={handleProblem}
-                                inputProps={{
-                                    "data-testid" : "select-problem"
-                                }}
+                                inputProps={{"data-testid" : "select-problem"}}
                             >
                                 <MenuItem value='Custom'> Custom </MenuItem>
                                 {apiProblem ? apiProblem.map(item =>
@@ -996,11 +994,10 @@ function RootEquation() {
                             <div className='input-div'>
 
                                 <div className='equation-input-div'>
-                                    <TextField
+                                    <TextField 
                                         inputProps={{
                                             "data-testid": "equation-input"
-                                        }}
-
+                                        }}                                
                                         label='Equation'
                                         type='text'
                                         onChange={handleEquationInput}
@@ -1022,13 +1019,14 @@ function RootEquation() {
                                     <TextField
                                         inputProps={{
                                             "data-testid": "left-input"
-                                        }}
+                                        }}     
                                         label='Left'
+                                        aria-label="Left"
                                         type='text'
                                         onChange={handleLeftInput}
                                         id='left'
                                         variant="outlined"
-                                        placeholder='BoundLeft'
+                                        placeholder='BoundLeft'                    
 
                                     />
                                     {/* <input 
@@ -1042,13 +1040,14 @@ function RootEquation() {
                                     <TextField
                                         inputProps={{
                                             "data-testid": "right-input"
-                                        }}
+                                        }}     
                                         label='Right'
+                                        aria-label="Right"
                                         type='text'
                                         onChange={handleRightInput}
                                         id='right'
                                         variant="outlined"
-                                        placeholder='BoundRight'
+                                        placeholder='BoundRight'                                    
                                     />
                                     {/* <label>Right:</label> 
                             <input 
@@ -1060,9 +1059,7 @@ function RootEquation() {
 
                                 <div className='button'>
                                     {/* <input type="submit" value="Submit" /> */}
-                                    <Button inputProps={{
-                                        "data-testid": "submit-button"
-                                    }} variant="contained" type='submit' value='Submit' > Submit </Button>
+                                    <Button data-testid="submit-button" variant="contained" type='submit' value='Submit' > SUBMIT </Button>
                                 </div>
 
 
@@ -1115,7 +1112,7 @@ function RootEquation() {
 
                                 <div className='button'>
                                     {/* <input type="submit" value="Submit" /> */}
-                                    <Button variant="contained" type='submit' value='Submit' > Submit </Button>
+                                    <Button variant="contained" type='submit' value='Submit' > Calculate </Button>
                                 </div>
 
                             </div>
@@ -1130,7 +1127,7 @@ function RootEquation() {
             <div className='content' style={{ textAlign: 'center' }}>
 
                         <div className='problem-div'>
-                            <div className='problem'>
+                            <div data-testid="answer-test" className='problem'>
                                 <h2>
                                     Method is {method}
                                 </h2>
@@ -1160,8 +1157,9 @@ function RootEquation() {
 
                                     <div className='answer'>
                                         {/* <h2> Answer of Equation {answer} </h2> */}
+                                        <p>{answer}</p>
                                         <h2> Answer of Equation
-                                            <MathJaxContext id='answer'>
+                                            <MathJaxContext id='answer' inputProps={{"data-testid": "answer-test"}}>
                                                 {showProblem(answer)}
                                             </MathJaxContext>
                                         </h2>

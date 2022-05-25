@@ -54,7 +54,7 @@ function Course() {
                             This is Linear Algebra Course 
                         </p>
                         
-                        <Link to="./linear_algebra" ><Button variant="contained" className='bt_root_of_equation' style={{backgroundColor: '#6CBB7A'}} > View Linear Algebra Content </Button></Link>
+                        <Link to="./linear_algebra" ><Button data-testid='linear-algebra-button-test' variant="contained" className='bt_root_of_equation' style={{backgroundColor: '#6CBB7A'}} > View Linear Algebra Content </Button></Link>
                         
                     </div>
 

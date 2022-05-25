@@ -51,7 +51,7 @@ const columnsTable = [
     }
 ];
 
-let token;
+let token = {};
 const login = async () => {
     await axios.post('http://localhost:3001/login', {
         email: "s6204062616316@email.kmutnb.ac.th",
@@ -374,6 +374,10 @@ function LinearRegression() {
                                 value={method}
                                 label="method"
                                 onChange={handleMethod}
+                                inputProps={{
+                                    "data-testid" : "select-method"
+                                }}
+
                             >
                                 {methodOption.map((options) =>
 
@@ -406,6 +410,9 @@ function LinearRegression() {
                                 value={problem}
                                 label="problem"
                                 onChange={handleProblem}
+                                inputProps={{
+                                    "data-testid" : "select-problem"
+                                }}
                             >
                                 <MenuItem value='Custom'> Custom </MenuItem>
                                 {apiProblem ? apiProblem.map(item =>

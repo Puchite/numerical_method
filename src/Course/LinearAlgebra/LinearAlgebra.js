@@ -620,7 +620,7 @@ function LinearAlgebra() {
         console.log(matrix)
         try {
             return (
-                <MathJax dynamic inline>
+                <MathJax dynamic inline data-testid="matrix-test">
                     {"\\(" +
                         math.parse(matrix.toString().replace(/\*/g, "")).toTex({
                             parenthesis: "keep",
@@ -768,6 +768,9 @@ function LinearAlgebra() {
                     <FormControl sx={{ m: 1, minWidth: 500 }}>
                         <InputLabel id="method-select-label"> Method </InputLabel>
                         <Select
+                            inputProps={{
+                                "data-testid" : "select-method"
+                            }}
                             labelId="methodOption"
                             id="method-select"
                             value={method}
@@ -794,6 +797,7 @@ function LinearAlgebra() {
                     <FormControl sx={{ m: 1, minWidth: 500 }}>
                         <InputLabel id="problem-select-label"> Problem </InputLabel>
                         <Select
+                            inputProps={{"data-testid" : "select-problem"}}
                             // defaultValue={null}
                             labelId="select-problem"
                             id="problem-select"
@@ -842,6 +846,9 @@ function LinearAlgebra() {
                         /> */}
                         <div className='input-rows-size'>
                             <TextField
+                                inputProps={{
+                                    "data-testid": "row-input"
+                                }}
                                 label='Row'
                                 type='text'
                                 onChange={((event) => setMatrixSize({ ...matrixSize, rows: event.target.value }))}
@@ -861,6 +868,9 @@ function LinearAlgebra() {
                         <div className='input-columns-size'>
 
                             <TextField
+                                inputProps={{
+                                    "data-testid": "column-input"
+                                }}
                                 label='Column'
                                 type='text'
                                 onChange={((event) => setMatrixSize({ ...matrixSize, columns: event.target.value }))}
@@ -919,8 +929,11 @@ function LinearAlgebra() {
 
             <div className='content' style={{ textAlign: 'center' }}>
 
+                <h2>Method is {method}</h2>
+                
                 <div className='matrixA-div'>
                     <h2> MatrixA is </h2>
+                    <p>{matrixA}</p>
                     <MathJaxContext>
                         {showMatrix(matrixA)}
                         {/* <MathJax dynamic>{"\\(" +parse(matrixA.toString().replace(/\r/g, "")).toTex({parenthesis: "keep",implicit: "show",})+ "\\)"}</MathJax> */}
@@ -939,6 +952,7 @@ function LinearAlgebra() {
 
                 <div className='answer-div'>
                     <h2> Answer is </h2>
+                    <p>{answer}</p>
                     <MathJaxContext>
                         <MathJax dynamic>{"\\(" + math.parse(answer.toString().replace(/\r/g, "")).toTex({ parenthesis: "keep", implicit: "show", }) + "\\)"}</MathJax>
                     </MathJaxContext>
