@@ -13,7 +13,6 @@ import {
 import './RootEquation.css'
 
 let epsilon = 0.000001
-let token;
 
 const methodOption = [
     { value: "bisection", label: "Bisection Method" },
@@ -22,17 +21,17 @@ const methodOption = [
     { value: "newtonRaphson", label: "Newton Raphson Method" },
 ]
 
-const login = async () => {
-    await axios.post('http://localhost:3001/login', {
-        email: "s6204062616316@email.kmutnb.ac.th",
-        password: "0859150757"
-    }).then((res) => {
-        token = res.data
-        console.log("Token is ", token)
-    })
-}
-
-
+let token = JSON.parse(localStorage.getItem('token'))
+// const login = async () => {
+//     await axios.post('http://localhost:3001/login', {
+//         email: "s6204062616316@email.kmutnb.ac.th",
+//         password: "0859150757"
+//     }).then((res) => {
+//         token = res.data
+//         console.log("Token is ", token)
+//     })
+// }
+// login();
 function RootEquation() {
 
     const [left, setLeft] = useState('-10')
@@ -99,7 +98,8 @@ function RootEquation() {
         // }
 
         if (isfirstRender.current) {
-            login();
+            console.log("localStorageToken ", JSON.parse(localStorage.getItem('token')));
+            // login();
             getData();
             isfirstRender.current = false
             console.log("*This is First Render")
@@ -126,21 +126,24 @@ function RootEquation() {
 
     const getData = async () => {
         // await axios.get('http://localhost:3001/root-equation')
-        await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
-            .then((res) => {
-                console.log('fetch success data is', res.data)
-                const response = res.data
-                setRes(response)
+        // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
+        //     .then((res) => {
+        //         console.log('fetch success data is', res.data)
+        //         const response = res.data
+        //         setRes(response)
 
-            }, (error) => {
-                console.log(error)
-            })
+        //     }, (error) => {
+        //         console.log(error)
+        //     })
 
-        await axios.get('http://localhost:3001/root-equation', {
+        await axios.get('https://numerical-react-api.herokuapp.com/root-equation', {
             headers: {
                 "Authorization": `Bearer ${token.accessToken}`
             }
-        }).then((response) => {
+        }).then((res) => {
+            const response = res.data
+            setRes(response)
+            console.log("get with token data is ", response.data)
             console.log("get with token data is ", response.data)
         })
     }

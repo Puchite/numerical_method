@@ -26,8 +26,18 @@ const methodOption = [
     { value: "conjugate", label: "Conjugate Method" },
 
 ]
-
-
+let token = JSON.parse(localStorage.getItem('token'))
+// const login = async () => {
+//     await axios.post('http://localhost:3001/login', {
+//         email: "s6204062616316@email.kmutnb.ac.th",
+//         password: "0859150757"
+//     }).then((res) => {
+//         token = res.data
+//         console.log("[Linear Algebra] Token is ", token)
+//     })
+// }
+// login();
+console.log("[Linear Algebra]2 Token is ",token.accessToken);
 function LinearAlgebra() {
     // const [ bound, setBound ] = useState({left:'0',right:'0'})
     const [matrixA, setMatrixA] = useState([0])
@@ -57,7 +67,8 @@ function LinearAlgebra() {
     useEffect(() => {
 
         if (isfirstRender.current) {
-            getData()
+            // login();
+            getData();
             isfirstRender.current = false
             console.log("*This is First Render")
         }
@@ -75,17 +86,26 @@ function LinearAlgebra() {
 
 
     const getData = async () => {
-        // await axios.get('http://localhost:3001/linear')
-        await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/linear')
-            .then((res) => {
-                console.log('fetch success data is', res.data)
-                const response = res.data
-                setRes(response)
+        // await axios.get('http://localhost:3001/root-equation')
+        // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
+        //     .then((res) => {
+        //         console.log('fetch success data is', res.data)
+        //         const response = res.data
+        //         setRes(response)
 
-            }, (error) => {
-                console.log(error)
-            })
+        //     }, (error) => {
+        //         console.log(error)
+        //     })
 
+        await axios.get('https://numerical-react-api.herokuapp.com/linear', {
+            headers: {
+                "Authorization": `Bearer ${token.accessToken}`
+            }
+        }).then((res) => {
+            const response = res.data
+            setRes(response)
+            console.log("get with token data is ", response.data)
+        })
     }
 
 

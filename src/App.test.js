@@ -72,7 +72,7 @@ test('user can calculate custom equation in Root of Equation',async () => {
   fireEvent.click(screen.getByText(/SUBMIT/i));
 
   await waitFor(()=>{
-    expect(screen.getByText('1.8988289833068848')).toBeInTheDocument();
+    expect(screen.getByText('[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]')).toBeInTheDocument();
   });
 
 });

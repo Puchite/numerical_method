@@ -51,7 +51,7 @@ const columnsTable = [
     }
 ];
 
-let token = {};
+var token = {};
 const login = async () => {
     await axios.post('http://localhost:3001/login', {
         email: "s6204062616316@email.kmutnb.ac.th",
@@ -120,17 +120,24 @@ function LinearRegression() {
 
     }, [equation, problem, chartData, chartAnswer, answer])
 
-
     const getData = async () => {
+        // await axios.get('http://localhost:3001/root-equation')
+        // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
+        //     .then((res) => {
+        //         console.log('fetch success data is', res.data)
+        //         const response = res.data
+        //         setRes(response)
 
-        console.log("ACCESS TOKEN ", token)
-        await axios.get('http://localhost:3001/linearRegression', {
+        //     }, (error) => {
+        //         console.log(error)
+        //     })
+
+        await axios.get('https://numerical-react-api.herokuapp.com/linearRegression', {
             headers: {
                 "Authorization": `Bearer ${token.accessToken}`
             }
-        }).then((res) => {
-            const response = res.data
-            setRes(response)
+        }).then((response) => {
+            console.log("get with token data is ", response.data)
         })
     }
 

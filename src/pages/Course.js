@@ -4,6 +4,18 @@ import './Course.css'
 import axios from 'axios'
 import { Button } from '@mui/material'
 
+let token = {};
+const login = async () => {
+    await axios.post('https://numerical-react-api.herokuapp.com/login', {
+        email: "s6204062616316@email.kmutnb.ac.th",
+        password: "0859150757"
+    }).then((res) => {
+        token = res.data
+        localStorage.setItem('token', JSON.stringify(token));
+        console.log("Token is ", token)
+    })
+}
+login();
 function Course() {
     return (
 

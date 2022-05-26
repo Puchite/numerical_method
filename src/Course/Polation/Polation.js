@@ -67,6 +67,17 @@ const columnsTable = [
     }
 ];
 
+let token = JSON.parse(localStorage.getItem('token'))
+// const login = async () => {
+//     await axios.post('http://localhost:3001/login', {
+//         email: "s6204062616316@email.kmutnb.ac.th",
+//         password: "0859150757"
+//     }).then((res) => {
+//         token = res.data
+//         console.log("Token is ", token)
+//     })
+// }
+// login();
 
 function Polation() {
 
@@ -116,7 +127,8 @@ function Polation() {
     useEffect(() => {
 
         if (isfirstRender.current) {
-            getData()
+            // login();
+            getData();
             isfirstRender.current = false
             console.log("*This is First Render")
         }
@@ -136,17 +148,26 @@ function Polation() {
 
 
     const getData = async () => {
-        // await axios.get('http://localhost:3001/polation')
-        await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/polation')
-            .then((res) => {
-                console.log('fetch success data is', res.data)
-                const response = res.data
-                setRes(response)
+        // await axios.get('http://localhost:3001/root-equation')
+        // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
+        //     .then((res) => {
+        //         console.log('fetch success data is', res.data)
+        //         const response = res.data
+        //         setRes(response)
 
-            }, (error) => {
-                console.log(error)
-            })
+        //     }, (error) => {
+        //         console.log(error)
+        //     })
 
+        await axios.get('https://numerical-react-api.herokuapp.com/polation', {
+            headers: {
+                "Authorization": `Bearer ${token.accessToken}`
+            }
+        }).then((res) => {
+            const response = res.data;
+            setRes(response);
+            console.log("get with token data is ", response.data)
+        })
     }
 
     const handleEquationInput = (e) => {
