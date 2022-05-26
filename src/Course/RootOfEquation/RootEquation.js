@@ -30,7 +30,7 @@ const login = async () => {
     }).then((res) => {
         token = res.data
         sessionStorage.setItem('token', JSON.stringify(token));
-        console.log("Token is ", token)
+        
     })
 }
 login();
@@ -74,37 +74,37 @@ function RootEquation() {
         //     }).then((res) => {
         //       const response = res.data
         //       setToken(response)
-        //       console.log("Token is ",token)
+        //       
         //     })
         //   }
 
-        // console.log(res)
+        // 
         // const getData = async () => {
         //     // await axios.get('http://localhost:3001/root-equation')
         //     await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
         //                                .then((res) =>{
-        //                                     console.log('fetch success data is', res.data)
+        //                                     
         //                                     const response = res.data
         //                                     setRes(response)
 
         //                                 }, (error) => {
-        //                                     console.log(error)})
-        //     console.log("ACCESS TOKEN ",token)
+        //                                     
+        //     
         //     await axios.get('http://localhost:3001/root-equation', {
         //         headers:{
         //             "Authorization" : `Bearer ${token.accessToken}`
         //         }
         //     }).then((response) =>{
-        //         console.log("get with token data is ",response.data)
+        //         
         //     })
         // }
 
         if (isfirstRender.current) {
-            console.log("localStorageToken ", JSON.parse(localStorage.getItem('token')));
+            
             // login();
             getData();
             isfirstRender.current = false
-            console.log("*This is First Render")
+            
         }
         else {
             equationRef.current = equation
@@ -122,7 +122,7 @@ function RootEquation() {
     //     }).then((res) => {
     //       const response = res.data
     //       setToken(response)
-    //       console.log("Token is ",token)
+    //       
     //     })
     //   }
 
@@ -130,12 +130,12 @@ function RootEquation() {
         // await axios.get('http://localhost:3001/root-equation')
         // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
         //     .then((res) => {
-        //         console.log('fetch success data is', res.data)
+        //         
         //         const response = res.data
         //         setRes(response)
 
         //     }, (error) => {
-        //         console.log(error)
+        //         
         //     })
 
         await axios.get('https://numerical-react-api.herokuapp.com/root-equation', {
@@ -145,8 +145,8 @@ function RootEquation() {
         }).then((res) => {
             const response = res.data
             setRes(response)
-            console.log("get with token data is ", response.data)
-            console.log("get with token data is ", response.data)
+            
+            
         })
     }
 
@@ -178,12 +178,12 @@ function RootEquation() {
 
     const handleEquationInput = (e) => {
         setEquation(e.target.value)
-        console.log(equation)
+        
     }
 
     const handleMethod = (e) => {
 
-        console.log(e.target.value)
+        
         if (e.target.value === 'none') {
             setMethod('none')
         }
@@ -203,17 +203,17 @@ function RootEquation() {
                 break
 
             case 'onePoint':
-                console.log('onePoint')
+                
                 setapiProblem(res.onePoint)
                 break
 
             case 'newtonRaphson':
-                console.log('newtonRaphson')
+                
                 setapiProblem(res.newtonRaphson)
                 break
 
             default:
-                console.log('No Method Found')
+                
         }
 
     }
@@ -242,12 +242,12 @@ function RootEquation() {
             callMethodCustom(method)
 
             try {
-                console.log('equation:' + equation + ' answer: ' + answer)
-                console.log("tempAnswer: " + tempAnswer)
+                
+                
                 let point = "(" + tempAnswer + ",0)"
 
             } catch (error) {
-                console.log("update Plot Error")
+                
             }
 
         }
@@ -271,13 +271,13 @@ function RootEquation() {
                     // {
                     //     // eslint-disable-next-line no-loop-func
                     //     setTimeout(() => {
-                    //         console.log("iteration ",i)
+                    //         
                     //         let xLeft = "x="+table.rowsTable[i].xl;
                     //         let xRight = "x="+table.rowsTable[i].xr;
                     //         calculator.setExpression({ id: 'left', latex: xLeft});
                     //         calculator.setExpression({ id: 'right', latex: xRight});
-                    //         console.log("xl ",table.rowsTable[i].xl)
-                    //         console.log("xr ",table.rowsTable[i].xr)
+                    //         
+                    //         
 
                     //     },i*5000)
                     // }
@@ -285,7 +285,7 @@ function RootEquation() {
                 }
 
             } catch (error) {
-                console.log("update Plot Error");
+                
             }
         }
 
@@ -295,12 +295,12 @@ function RootEquation() {
     function callMethod(method) {
         switch (method) {
             case 'bisection':
-                console.log('bisection')
-                console.log('equation: ' + problem + ' left: ' + left + ' right:' + right)
+                
+                
                 setAnswer(calBisection(problem, left, right))
-                console.log("tempObj", tempObj)
+                
                 tempAnswer = calBisection(problem, left, right).toFixed(6)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
 
                 // tempObj = calculateBisection(problem, left, right, epsilon);
@@ -334,34 +334,34 @@ function RootEquation() {
 
             case 'falsePosition':
                 // tempObj = calculateFalsePosition(equation, left, right, epsilon)
-                // console.log(tempObj)
-                console.log('falsePosition')
-                console.log('equation: ' + problem + ' left: ' + left + ' right: ' + right)
+                // 
+                
+                
                 tempAnswer = calFalsePosition(problem, left, right)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
 
 
                 break
 
             case 'onePoint':
-                console.log('onePoint')
-                console.log('equation: ' + problem + ' start: ' + start)
+                
+                
                 tempAnswer = calOnePoint(problem, start)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
                 break
 
             case 'newtonRaphson':
-                console.log('newtonRaphson')
-                console.log('equation: ' + problem + ' start: ' + start)
+                
+                
                 tempAnswer = calNewton(problem, start)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
                 break
 
             default:
-                console.log('No Method Found')
+                
 
         }
 
@@ -371,40 +371,40 @@ function RootEquation() {
     function callMethodCustom(method) {
         switch (method) {
             case 'bisection':
-                console.log('bisection')
-                console.log('equation: ' + equation + ' left: ' + left + ' right:' + right)
+                
+                
                 // setAnswer(calBisection(problem, left, right))
                 tempAnswer = calBisection(equation, left, right)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
                 break
 
             case 'falsePosition':
-                console.log('falsePosition')
-                console.log('equation: ' + equation + ' left: ' + left + ' right: ' + right)
+                
+                
                 tempAnswer = calFalsePosition(equation, left, right)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
                 break
 
             case 'onePoint':
-                console.log('onePoint')
-                console.log('equation: ' + equation + ' start: ' + start)
+                
+                
                 tempAnswer = calOnePoint(equation, start)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
                 break
 
             case 'newtonRaphson':
-                console.log('newtonRaphson')
-                console.log('equation: ' + equation + ' start: ' + start)
+                
+                
                 tempAnswer = calNewton(equation, start)
-                console.log("Temp answer:" + tempAnswer)
+                
                 setAnswer(tempAnswer)
                 break
 
             default:
-                console.log('No Method Found')
+                
 
         }
     }
@@ -415,14 +415,14 @@ function RootEquation() {
             let eq = math.parse(equation)
             return eq.evaluate({ x: xq })
         } catch (error) {
-            console.log("Equation Error")
+            
         }
 
     }
 
     function calBisection(equation, xl, xr) {
 
-        console.log("bound ", bound.left)
+        
         xl = parseFloat(xl)
         xr = parseFloat(xr)
         let dataError = []
@@ -437,7 +437,7 @@ function RootEquation() {
 
         while (c > epsilon) {
 
-            // console.log("Iteration: ",round) 
+            // 
 
             fxm = calFunction(equation, xm)
             fxr = calFunction(equation, xr)
@@ -454,9 +454,9 @@ function RootEquation() {
             c = (xm - temp) / xm
             c = Math.abs(c)
 
-            // console.log("Error :" ,c)
+            // 
             if (!isFinite(c) || isNaN(c)) {
-                console.log("C is inf or NaN")
+                
                 c = 1;
                 dataError.push({ error: 1 })
             }
@@ -469,10 +469,10 @@ function RootEquation() {
 
             objTable.push({ id: round, xl: xl.toFixed(6), xr: xr.toFixed(6), xm: xm.toFixed(6), error: c.toFixed(6) })
             round = round + 1
-            // console.log("--------------------------")
+            // 
         }
 
-        console.log("DataError: ", dataError)
+        
         setChartData(dataError)
         setChartAnswer(dataAnswer)
 
@@ -520,9 +520,9 @@ function RootEquation() {
         ];
 
         let test = Object.keys(objTable)[Object.keys(objTable).pop()]
-        console.log("test is ", test)
-        console.log("obj is ", objTable[test].xm)
-        console.log("Last Object ", Object.keys(objTable)[Object.keys(objTable).length - 1])
+        
+        
+        
         SetTable(
             {
                 columnsTable: columnsTemp,
@@ -549,7 +549,7 @@ function RootEquation() {
 
         while (round < 100) {
 
-            console.log("Iteration ", round)
+            
             let fx1 = calFunction(equation, x1)
             let fxl = calFunction(equation, xl)
             let fxr = calFunction(equation, xr)
@@ -571,7 +571,7 @@ function RootEquation() {
 
 
             if (!isFinite(c) || isNaN(c)) {
-                console.log("C is inf or NaN")
+                
                 c = 1
                 dataError.push({ error: 1 })
             }
@@ -588,7 +588,7 @@ function RootEquation() {
             }
         }
 
-        console.log("DataError: ", dataError)
+        
         setChartData(dataError)
         setChartAnswer(dataAnswer)
 
@@ -681,7 +681,7 @@ function RootEquation() {
             }
             // if(c === Infinity){
 
-            //     console.log('Infinity')
+            //     
             //     //   setChartData(dataError)
             //     //   setChartAnswer(dataAnswer)
 
@@ -700,7 +700,7 @@ function RootEquation() {
 
         }
 
-        console.log("DataError: ", dataError)
+        
         setChartData(dataError)
         setChartAnswer(dataAnswer)
 
@@ -740,7 +740,7 @@ function RootEquation() {
         ];
 
 
-        console.log(objTable)
+        
         SetTable(
             {
                 columnsTable: columnsTemp,
@@ -765,18 +765,18 @@ function RootEquation() {
 
         while (round < 100) {
 
-            console.log("Iteration: ", round)
+            
             x_temp = -calFunction(equation, x_old) / calFunction(math.derivative(equation, 'x').toString(), x_old)
-            console.log("Delta X: " + x_temp)
+            
             x_new = x_old + x_temp
-            console.log("X_new: " + x_new)
+            
             dataAnswer.push({ answer: x_new })
 
             c = Math.abs((x_new - x_old) / x_new)
-            console.log("Error: " + c)
+            
 
             if (!isFinite(c) || isNaN(c)) {
-                console.log("C is inf or NaN")
+                
                 c = 1
                 dataError.push({ error: 1 })
             }
@@ -807,7 +807,7 @@ function RootEquation() {
         }
 
         setChartData(dataError)
-        console.log("***Data Error is: ", dataError)
+        
         setChartAnswer(dataAnswer)
 
         const columnsTemp = [
@@ -846,7 +846,7 @@ function RootEquation() {
         ];
 
 
-        console.log(objTable)
+        
         SetTable(
             {
                 columnsTable: columnsTemp,
@@ -877,7 +877,7 @@ function RootEquation() {
 
     const showTable = (table) => {
         try {
-            console.log(table)
+            
             return <DataGrid
                 rows={table.rowsTable}
                 columns={table.columnsTable}
@@ -886,7 +886,7 @@ function RootEquation() {
             />
 
         } catch (e) {
-            console.log(e)
+            
         }
 
     }

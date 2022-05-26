@@ -76,7 +76,7 @@ const login = async () => {
     }).then((res) => {
         token = res.data
         sessionStorage.setItem('token', JSON.stringify(token));
-        console.log("Token is ", token)
+        
     })
 }
 login();
@@ -131,7 +131,7 @@ function Polation() {
             // login();
             getData();
             isfirstRender.current = false
-            console.log("*This is First Render")
+            
         }
         else {
             equationRef.current = equation
@@ -152,12 +152,12 @@ function Polation() {
         // await axios.get('http://localhost:3001/root-equation')
         // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
         //     .then((res) => {
-        //         console.log('fetch success data is', res.data)
+        //         
         //         const response = res.data
         //         setRes(response)
 
         //     }, (error) => {
-        //         console.log(error)
+        //         
         //     })
 
         await axios.get('https://numerical-react-api.herokuapp.com/polation', {
@@ -167,24 +167,24 @@ function Polation() {
         }).then((res) => {
             const response = res.data;
             setRes(response);
-            console.log("get with token data is ", response.data)
+            
         })
     }
 
     const handleEquationInput = (e) => {
         setEquation(e.target.value)
-        console.log(equation)
+        
     }
 
     const handleMethod = (e) => {
 
-        console.log(e.target.value)
+        
         if (e.target.value === 'none') {
             setMethod('none')
         }
         else {
             setMethod(e.target.value)
-            console.log(problem)
+            
             setProblem('Custom')
         }
 
@@ -207,7 +207,7 @@ function Polation() {
                 break
 
             default:
-                console.log('No Course Found')
+                
         }
 
     }
@@ -217,17 +217,17 @@ function Polation() {
         setProblem(e.target.value)
         // setX(apiProblem[e.target.value-1].x)
         // setY(apiProblem[e.target.value-1].y)
-        // console.log(apiProblem[e.target.value-1].x)
+        // 
         // let obj = []
         // for(let index = 0; index < apiProblem[e.target.value-1].x.length;  index++)
         // {
-        //     console.log("X",apiProblem[e.target.value-1].x[index])
-        //     console.log("Y",apiProblem[e.target.value-1].y[index])
+        //     
+        //     
         //     obj.push({id:index, x:apiProblem[e.target.value-1].x[index], y:apiProblem[e.target.value-1].y[index]})
         // }
 
         // setRowTable(obj)
-        // console.log(rowTable)
+        // 
         if (e.target.value === 'Custom') {
             setDisableinput(false)
             setCustominput(true)
@@ -246,16 +246,16 @@ function Polation() {
             setCustominput(false)
             setX(apiProblem[e.target.value - 1].x)
             setY(apiProblem[e.target.value - 1].y)
-            console.log(apiProblem[e.target.value - 1].x)
+            
             let obj = []
             for (let index = 0; index < apiProblem[e.target.value - 1].x.length; index++) {
-                console.log("X", apiProblem[e.target.value - 1].x[index])
-                console.log("Y", apiProblem[e.target.value - 1].y[index])
+                
+                
                 obj.push({ id: index, x: apiProblem[e.target.value - 1].x[index], y: apiProblem[e.target.value - 1].y[index] })
             }
 
             setRowTable(obj)
-            console.log(rowTable)
+            
         }
 
     }
@@ -308,7 +308,7 @@ function Polation() {
                 break
 
             default:
-                console.log('No Method Found')
+                
 
         }
     }
@@ -331,7 +331,7 @@ function Polation() {
                 break
 
             default:
-                console.log('No Method Found')
+                
 
         }
     }
@@ -354,32 +354,32 @@ function Polation() {
     }
 
     function calLagrange(x, y, findX) {
-        console.log("findX ", findX)
+        
         let xx = parseInt(findX)
         let round = x.length
         let l = 0
-        console.log("x is: ", x)
+        
 
         for (let i = 0; i < round; i++) {
             let l_top = 1
             let l_divider = 1
             for (let j = 0; j < round; j++) {
                 if (j !== i) {
-                    // console.log("x",j," ",x[j],"-",xx)
+                    // 
                     l_top *= (x[j] - xx)
-                    // console.log("l_top: ",l_top)
+                    // 
                     l_divider *= (x[j] - x[i])
-                    // console.log("x",j," ","-",x[i])
-                    // console.log("l_divider: ",l_divider)
+                    // 
+                    // 
                 }
             }
-            // console.log(l_top,"/",l_divider,"*",y[i])
+            // 
             l += (l_top / l_divider) * y[i]
-            // console.log("l",[i],": ",l)
-            // console.log("***************")
+            // 
+            // 
         }
 
-        // console.log(l)
+        // 
         setAnswer(l)
     }
 
@@ -551,7 +551,7 @@ function Polation() {
                             rowsPerPageOptions={[10]}
                             checkboxSelection
                             onCellEditCommit={event => {
-                                console.log(event.field,": ",event.value)
+                                
                                 if(event.field === 'x')
                                 {
                                     let newX = JSON.parse(JSON.stringify(xCustom))                
@@ -577,7 +577,7 @@ function Polation() {
                                     let arrY = []
                                     
                                     for (let index in newSelection) {
-                                        console.log("xCustom: ",xCustom[newSelection[index]-1])
+                                        
                                         arrX.splice(index, 0, xCustom[newSelection[index]-1])
                                         arrY.splice(index, 0, yCustom[newSelection[index]-1])
                                     }

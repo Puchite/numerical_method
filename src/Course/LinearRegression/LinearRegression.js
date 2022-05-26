@@ -59,7 +59,7 @@ const login = async () => {
     }).then((res) => {
         token = res.data
         sessionStorage.setItem('token', JSON.stringify(token));
-        console.log("Token is ", token)
+        
     })
 }
 login();
@@ -127,13 +127,13 @@ function LinearRegression() {
                 "Authorization": `Bearer ${token.accessToken}`
             }
         }).then((response) => {
-            console.log("get with token data is ", response.data)
+            
         })
     }
 
     const handleMethod = (e) => {
 
-        console.log(e.target.value)
+        
         if (e.target.value === 'none') {
             setMethod('none')
         }
@@ -146,7 +146,7 @@ function LinearRegression() {
 
             case "linear":
                 setapiProblem(res.linear)
-                console.log(apiProblem)
+                
                 break
 
             case 'polynomial':
@@ -158,7 +158,7 @@ function LinearRegression() {
                 break
 
             default:
-                console.log('No Method Found')
+                
         }
 
     }
@@ -184,16 +184,16 @@ function LinearRegression() {
             setCustominput(false)
             setX(apiProblem[e.target.value - 1].x)
             setY(apiProblem[e.target.value - 1].fx)
-            console.log(apiProblem[e.target.value - 1].x)
+            
             let obj = []
             for (let index = 0; index < apiProblem[e.target.value - 1].x.length; index++) {
-                console.log("X", apiProblem[e.target.value - 1].x[index])
-                console.log("Y", apiProblem[e.target.value - 1].y[index])
+                
+                
                 obj.push({ id: index, x: apiProblem[e.target.value - 1].x[index], y: apiProblem[e.target.value - 1].y[index] })
             }
 
             setRowTable(obj)
-            console.log(rowTable)
+            
         }
 
     }
@@ -233,7 +233,7 @@ function LinearRegression() {
             case 'linear':
                 tempAnswer = linear(x, y);
                 // setAnswer(tempAnswer)
-                console.log("tempAnswer ",tempAnswer);
+                
                 break
 
             case 'polynomial':
@@ -247,7 +247,7 @@ function LinearRegression() {
                 break
 
             default:
-                console.log('No Method Found')
+                
 
         }
     }
@@ -270,7 +270,7 @@ function LinearRegression() {
                 break
 
             default:
-                console.log('No Method Found')
+                
 
         }
     }
@@ -495,7 +495,7 @@ function LinearRegression() {
                             rowsPerPageOptions={[10]}
                             checkboxSelection
                             onCellEditCommit={event => {
-                                console.log(event.field,": ",event.value)
+                                
                                 if(event.field === 'x')
                                 {
                                     let newX = JSON.parse(JSON.stringify(xCustom))                
@@ -521,7 +521,7 @@ function LinearRegression() {
                                     let arrY = []
                                     
                                     for (let index in newSelection) {
-                                        console.log("xCustom: ",xCustom[newSelection[index]-1])
+                                        
                                         arrX.splice(index, 0, xCustom[newSelection[index]-1])
                                         arrY.splice(index, 0, yCustom[newSelection[index]-1])
                                     }

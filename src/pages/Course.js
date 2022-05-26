@@ -12,7 +12,7 @@ const login = async () => {
     }).then((res) => {
         token = res.data
         sessionStorage.setItem('token', JSON.stringify(token));
-        console.log("Token is ", token)
+        
     })
 }
 login();

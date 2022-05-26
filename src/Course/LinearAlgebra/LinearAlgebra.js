@@ -35,7 +35,7 @@ const login = async () => {
     }).then((res) => {
         token = res.data
         sessionStorage.setItem('token', JSON.stringify(token));
-        console.log("Token is ", token)
+        
     })
 }
 login();
@@ -71,7 +71,7 @@ function LinearAlgebra() {
             // login();
             getData();
             isfirstRender.current = false
-            console.log("*This is First Render")
+            
         }
         else {
 
@@ -95,7 +95,7 @@ function LinearAlgebra() {
         }).then((res) => {
             const response = res.data
             setRes(response)
-            console.log("get with token data is ", response.data)
+            
         })
     }
 
@@ -106,7 +106,7 @@ function LinearAlgebra() {
         setMatrixProve([0])
         setMatrixA([0])
         setMatrixB([0])
-        console.log(e.target.value)
+        
         if (e.target.value === 'none') {
             setMethod('none')
         }
@@ -142,7 +142,7 @@ function LinearAlgebra() {
                 break
 
             default:
-                console.log('No Method Found')
+                
         }
 
     }
@@ -192,7 +192,7 @@ function LinearAlgebra() {
         }
 
         // arrayA[row][column] = parseFloat(e.target.value)  
-        console.log(typeof (arrayTemp))
+        
         arrayTemp[row][column] = parseFloat(e.target.value)
         setMatrixA(JSON.stringify(arrayTemp))
     }
@@ -205,7 +205,7 @@ function LinearAlgebra() {
 
 
         if (arrayTemp.length < 2) {
-            console.log("Array Temp ", arrayTemp)
+            
             arrayTemp = []
             arrayTemp = Object.assign(arrayTemp, Array(parseInt(matrixSize.rows)).fill(0))
             // for(let rows = 0; rows<parseInt(matrixSize.rows); rows++)
@@ -216,7 +216,7 @@ function LinearAlgebra() {
 
         let sizeString = (e.target.id).split("");
         let row = parseInt(sizeString[0])
-        console.log(typeof (arrayTemp))
+        
         // arrayA[row][column] = parseFloat(e.target.value)    
         arrayTemp[row] = parseFloat(e.target.value)
         setMatrixB(JSON.stringify(arrayTemp))
@@ -262,7 +262,7 @@ function LinearAlgebra() {
                 break
 
             default:
-                console.log("No Method Found")
+                
         }
     }
 
@@ -270,13 +270,13 @@ function LinearAlgebra() {
 
         let dataError = []
         let matrixAForm = JSON.parse(matrixA)
-        console.log("MatrixA: ", matrixAForm)
+        
         let matrixBForm = JSON.parse(matrixB)
-        console.log("MatrixB: ", matrixBForm)
+        
         let arrayX = Array(matrixAForm.length).fill(0)
 
-        // console.log("MatrixA: ",matrixAForm)
-        // console.log("MatrixB: ",matrixBForm)        
+        // 
+        // 
 
         for (let column = 0; column < matrixAForm[0].length; column++) {
             let matrixTemp = JSON.parse(matrixA)
@@ -317,9 +317,9 @@ function LinearAlgebra() {
         for (let i = 0; i < matrixTemp.length; i++) {
             for (let j = i + 1; j < matrixTemp.length; j++) {
                 let temp = matrixTemp[j][i] / matrixTemp[i][i]
-                console.log("temp: ", temp)
+                
                 for (let k = 0; k < matrixTemp.length + 1; k++) {
-                    console.log("matrix[", j, "]", "[", k, "]=", matrixTemp[j][k], "-", temp * matrixTemp[i][k])
+                    
                     matrixTemp[j][k] = matrixTemp[j][k] - temp * matrixTemp[i][k]
                 }
             }
@@ -365,7 +365,7 @@ function LinearAlgebra() {
 
                     let temp = matrixTemp[j][i] / matrixTemp[i][i]
                     for (let k = 0; k < matrixTemp.length + 1; k++) {
-                        console.log(i, j)
+                        
                         matrixTemp[j][k] = matrixTemp[j][k] - temp * matrixTemp[i][k]
                     }
                 }
@@ -403,7 +403,7 @@ function LinearAlgebra() {
 
         while (round < 100) {
             check = 0
-            console.log("Iteration " + round)
+            
             for (let row = 0; row < matrixAForm.length; row++) {
                 arrayXnew[row] = matrixBForm[row]
                 for (let column = 0; column < matrixAForm[0].length; column++) {
@@ -413,7 +413,7 @@ function LinearAlgebra() {
                     }
                     else if (row !== column) {
                         arrayXnew[row] -= (matrixAForm[row][column] * arrayX[column])
-                        // console.log(arrayXnew[row])
+                        // 
                     }
                 }
 
@@ -433,7 +433,7 @@ function LinearAlgebra() {
                 objAnswer = Object.assign(objAnswer, { ["X" + (i + 1)]: arrayXnew[i] })
                 objError = Object.assign(objError, { ["X" + (i + 1)]: arrayError[i] })
             }
-            console.log(dataError)
+            
             dataAnswer.push(objAnswer)
             dataError.push(objError)
             
@@ -480,7 +480,7 @@ function LinearAlgebra() {
 
         while (round < 1000) {
             check = 0
-            console.log("Iteration " + round)
+            
             for (let row = 0; row < matrixAForm.length; row++) {
                 arrayXnew[row] = matrixBForm[row]
                 for (let column = 0; column < matrixAForm[0].length; column++) {
@@ -489,7 +489,7 @@ function LinearAlgebra() {
                     }
                     else if (row !== column) {
                         arrayXnew[row] -= (matrixAForm[row][column] * arrayX[column])
-                        // console.log(arrayXnew[row])
+                        // 
                     }
                 }
                 arrayXnew[row] = (arrayXnew[row] / divide).toFixed(6)
@@ -522,13 +522,13 @@ function LinearAlgebra() {
             }
 
             if (check === arrayError.length) {
-                console.log(arrayX)
+                
                 setMatrixLength(matrixAForm.length)
                 setChartData(dataAnswer)
                 setChartError(dataError)
                 arrayX = arrayX.map(index => Number(index))
                 setAnswer(JSON.stringify(arrayX))
-                console.log("Type of arrayX ", typeof (arrayX))
+                
                 checkAnswer(matrixA, arrayX)
                 break
             }
@@ -560,7 +560,7 @@ function LinearAlgebra() {
         let round = 1
 
         while (round < 20000) {
-            console.log("Iteration ", round)
+            
 
             lambda_k = (math.multiply(math.multiply(matrixDForm, -1), matrixRForm)) / math.multiply(math.transpose(matrixDForm), math.multiply(matrixAForm, matrixDForm))
             arrayXnew = math.add(arrayX, math.multiply(lambda_k, matrixDForm))
@@ -570,24 +570,24 @@ function LinearAlgebra() {
 
             alpha_k = (math.multiply(math.transpose(matrixRnew), math.multiply(matrixAForm, matrixDForm))) / (math.multiply(math.transpose(matrixDForm), math.multiply(matrixAForm, matrixDForm)))
             matrixDnew = math.add(math.multiply(matrixRnew, -1), math.multiply(alpha_k, matrixDForm))
-            // console.log("lambda_k: ", lambda_k)
-            // console.log("arrayXnew: ", arrayXnew)
-            // console.log("matrixRnew: ", matrixRnew)
-            // console.log("error: ", error)
-            // console.log("alpha_k: ", alpha_k)
-            // console.log("matrixDnew: ", matrixDnew)
-            // console.log("------------------")
+            // 
+            // 
+            // 
+            // 
+            // 
+            // 
+            // 
 
 
 
             if (error < epsilon) {
-                console.log("********************************************")
+                
                 setMatrixLength(matrixAForm._data.length)
                 setChartData(dataAnswer)
                 setChartError(dataError)
                 arrayXnew = arrayXnew.map(index => Number(index.toFixed(6)))
 
-                console.log("Type of arrayXnew ", typeof (arrayXnew))
+                
                 checkAnswer(matrixA, arrayXnew)
                 setAnswer(arrayXnew)
                 return
@@ -628,7 +628,7 @@ function LinearAlgebra() {
     }
 
     const showMatrix = (matrix) => {
-        console.log(matrix)
+        
         try {
             return (
                 <MathJax dynamic inline data-testid="matrix-test">
@@ -646,7 +646,7 @@ function LinearAlgebra() {
     };
 
     const showChart = (length) => {
-        console.log("Lenght of Matrix is ", length)
+        
         var chartLine = [];
 
         var colorLine = ["#FF3333", "#FF33FC", "#8D33FF", "#333CFF", "#33E0FF", "33FF3C"]
@@ -732,12 +732,12 @@ function LinearAlgebra() {
         let matrixTranspose = JSON.parse(JSON.stringify(math.transpose(matrixTemp)))
 
         let matrixATemp = JSON.parse(JSON.stringify(matrixTemp))
-        console.log("matrixATemp is ", matrixATemp)
-        console.log("matrixATemp Lenght ", matrixATemp.data.length)
+        
+        
         for (let rows = 0; rows < matrixATemp.data.length; rows++) {
             for (let columns = 0; columns < matrixATemp.data[0].length; columns++) {
                 if (matrixATemp.data[rows][columns] !== matrixTranspose.data[rows][columns]) {
-                    console.log("non-sym")
+                    
                     return false
                 }
             }
@@ -749,19 +749,19 @@ function LinearAlgebra() {
 
     const checkAnswer = (matrixA, answer) => {
 
-        console.log("A ", matrixA)
-        console.log("B ", answer)
+        
+        
         answer = math.matrix(answer)
-        console.log("Type of MatrixA is ", typeof (matrixA))
-        console.log("Type of MatrixAnswer is ", typeof (answer))
-        console.log("Type of answerForm is ", typeof (answerForm))
+        
+        
+        
         let matrixAForm = math.matrix(JSON.parse(matrixA))
         let matrixAnswerForm = math.matrix(JSON.parse(answer))
 
         let matrixProveAX = math.multiply(matrixAForm, matrixAnswerForm)
         matrixProveAX = matrixProveAX.map(index => Number(index.toFixed(0)))
         setMatrixProve(matrixProveAX)
-        console.log("matrixProve", matrixProve)
+        
         return
 
     }
