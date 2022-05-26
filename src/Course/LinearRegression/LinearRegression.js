@@ -51,16 +51,17 @@ const columnsTable = [
     }
 ];
 
-var token = {};
+let token = {};
 const login = async () => {
     await axios.post('http://localhost:3001/login', {
         email: "s6204062616316@email.kmutnb.ac.th",
         password: "0859150757"
     }).then((res) => {
-        token = res.data
-        console.log("Token is ", token)
+        token = res.data;
+        console.log("Token is ", token);
     })
 }
+login();
 
 function LinearRegression() {
     const [left, setLeft] = useState('-10')
@@ -376,6 +377,7 @@ function LinearRegression() {
                             <InputLabel id="method-select-label"> Method </InputLabel>
                             <Select
                                 // defaultValue={null}
+                                
                                 labelId="select-method"
                                 id="method-select"
                                 value={method}

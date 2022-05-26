@@ -67,18 +67,18 @@ const columnsTable = [
     }
 ];
 
-let token = JSON.parse(localStorage.getItem('token'))
-// const login = async () => {
-//     await axios.post('http://localhost:3001/login', {
-//         email: "s6204062616316@email.kmutnb.ac.th",
-//         password: "0859150757"
-//     }).then((res) => {
-//         token = res.data
-//         console.log("Token is ", token)
-//     })
-// }
-// login();
-
+// let token = JSON.parse(localStorage.getItem('token'))
+let token = {};
+const login = async () => {
+    await axios.post('http://localhost:3001/login', {
+        email: "s6204062616316@email.kmutnb.ac.th",
+        password: "0859150757"
+    }).then((res) => {
+        token = res.data;
+        console.log("Token is ", token);
+    })
+}
+login();
 function Polation() {
 
     const [left, setLeft] = useState('-10')
@@ -434,6 +434,9 @@ function Polation() {
                             <InputLabel id="method-select-label"> Method </InputLabel>
                             <Select
                                 // defaultValue={null}
+                                inputProps={{
+                                    "data-testid" : "select-method"
+                                }}
                                 labelId="select-method"
                                 id="method-select"
                                 value={method}
@@ -466,6 +469,7 @@ function Polation() {
                             <InputLabel id="problem-select-label"> Problem </InputLabel>
                             <Select
                                 // defaultValue={null}
+                                inputProps={{"data-testid" : "select-problem"}}
                                 labelId="select-problem"
                                 id="problem-select"
                                 value={problem}
@@ -514,14 +518,18 @@ function Polation() {
                             variant="outlined"
                             // disabled={disableInput}
                             placeholder='Point of X'
+                            inputProps={{"data-testid" : "x-input"}}
                         />
                     </div>
 
                     <div className='button-submit'>
                         <Button variant="contained" type='submit' value='Submit' > Submit </Button>
                     </div>
-
-
+                    
+                    <div className='number of x'>
+                                <h3>Number of X and Y is {numberOfX}</h3>
+                    </div>
+                    
                 </div>
 
             </form>

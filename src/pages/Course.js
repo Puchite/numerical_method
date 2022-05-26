@@ -11,7 +11,7 @@ const login = async () => {
         password: "0859150757"
     }).then((res) => {
         token = res.data
-        localStorage.setItem('token', JSON.stringify(token));
+        sessionStorage.setItem('token', JSON.stringify(token));
         console.log("Token is ", token)
     })
 }

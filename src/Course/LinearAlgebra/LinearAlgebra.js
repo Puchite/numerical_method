@@ -26,18 +26,18 @@ const methodOption = [
     { value: "conjugate", label: "Conjugate Method" },
 
 ]
-let token = JSON.parse(localStorage.getItem('token'))
-// const login = async () => {
-//     await axios.post('http://localhost:3001/login', {
-//         email: "s6204062616316@email.kmutnb.ac.th",
-//         password: "0859150757"
-//     }).then((res) => {
-//         token = res.data
-//         console.log("[Linear Algebra] Token is ", token)
-//     })
-// }
-// login();
-console.log("[Linear Algebra]2 Token is ",token.accessToken);
+// let token = JSON.parse(localStorage.getItem('token'))
+let token = {};
+const login = async () => {
+    await axios.post('http://localhost:3001/login', {
+        email: "s6204062616316@email.kmutnb.ac.th",
+        password: "0859150757"
+    }).then((res) => {
+        token = res.data;
+        console.log("Token is ", token);
+    })
+}
+login();
 function LinearAlgebra() {
     // const [ bound, setBound ] = useState({left:'0',right:'0'})
     const [matrixA, setMatrixA] = useState([0])
