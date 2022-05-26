@@ -70,12 +70,13 @@ const columnsTable = [
 // let token = JSON.parse(localStorage.getItem('token'))
 let token = {};
 const login = async () => {
-    await axios.post('http://localhost:3001/login', {
+    await axios.post('https://numerical-react-api.herokuapp.com/login', {
         email: "s6204062616316@email.kmutnb.ac.th",
         password: "0859150757"
     }).then((res) => {
-        token = res.data;
-        console.log("Token is ", token);
+        token = res.data
+        sessionStorage.setItem('token', JSON.stringify(token));
+        console.log("Token is ", token)
     })
 }
 login();
