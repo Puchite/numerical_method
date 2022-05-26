@@ -23,7 +23,7 @@ test('renders without crashing', () => {
 });
 
 test('api is active', async () =>{
-  await axios.post('http://localhost:3001/login', {
+  await axios.post('https://numerical-react-api.herokuapp.com/login', {
         email: "s6204062616316@email.kmutnb.ac.th",
         password: "0859150757"
     }).then((res) => {
@@ -68,7 +68,7 @@ test('can get problem for Root Equation from api', async () => {
   });
  
   let token = {}
-  await axios.post('http://localhost:3001/login', {
+  await axios.post('https://numerical-react-api.herokuapp.com/login', {
     email: "s6204062616316@email.kmutnb.ac.th",
     password: "0859150757"
   }).then((res) => {
@@ -172,7 +172,7 @@ test('can get problem for Linear Algebra from api', async () => {
   });
  
   let token = {}
-  await axios.post('http://localhost:3001/login', {
+  await axios.post('https://numerical-react-api.herokuapp.com/login', {
     email: "s6204062616316@email.kmutnb.ac.th",
     password: "0859150757"
   }).then((res) => {
@@ -273,7 +273,7 @@ test('can get problem for Polation from api', async () => {
   });
  
   let token = {}
-  await axios.post('http://localhost:3001/login', {
+  await axios.post('https://numerical-react-api.herokuapp.com/login', {
     email: "s6204062616316@email.kmutnb.ac.th",
     password: "0859150757"
   }).then((res) => {

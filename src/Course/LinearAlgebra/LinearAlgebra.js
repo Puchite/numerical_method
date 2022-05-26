@@ -87,16 +87,6 @@ function LinearAlgebra() {
 
 
     const getData = async () => {
-        // await axios.get('http://localhost:3001/root-equation')
-        // await axios.get('https://my-json-server.typicode.com/Puchite/numerical_method_api/root-equation')
-        //     .then((res) => {
-        //         console.log('fetch success data is', res.data)
-        //         const response = res.data
-        //         setRes(response)
-
-        //     }, (error) => {
-        //         console.log(error)
-        //     })
 
         await axios.get('https://numerical-react-api.herokuapp.com/linear', {
             headers: {
