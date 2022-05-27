@@ -28,29 +28,15 @@ jobs:
         - name : Test
           run : yarn test
           
-  Build:
-    needs: [Install]
-    runs-on: ubuntu-latest
+        - name: Checkout repository
+          uses: actions/checkout@v2
 
-    strategy:
-      matrix:
-        node-version: [14.x]
+        - name: Upload coverage to Codecov
+          uses: codecov/codecov-action@v1
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-
-    - name: Build
-      run: yarn run build
-      
-  Deploy:
-      needs: [Build]
-      runs-on: ubuntu-latest
-      
-      steps:
+        - name: Build
+          run: yarn run build
+          
         - name: Deploy
           run: |
             git config --global user.name $user_name
@@ -58,18 +44,6 @@ jobs:
             git remote set-url origin https://${github_token}@github.com/${repository}
             npm run deploy
             
-      env:
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
-        repository: ${{ github.repository }}
-        
-  Docker:
-    needs: [Build]
-    runs-on: ubuntu-latest
-    
-    steps:
-    
         - name: Login to Docker Hub
           uses: docker/login-action@v1
           with:
@@ -86,6 +60,64 @@ jobs:
             file: ./Dockerfile
             push: true
             tags: ${{ secrets.DOCKER_HUB_USERNAME }}/numerical_react:latest
+#   Build:
+#     needs: [Install]
+#     runs-on: ubuntu-latest
+
+#     strategy:
+#       matrix:
+#         node-version: [14.x]
+
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
+
+#     - name: Upload coverage to Codecov
+#       uses: codecov/codecov-action@v1
+
+#     - name: Build
+#       run: yarn run build
+      
+#   Deploy:
+#       needs: [Build]
+#       runs-on: ubuntu-latest
+      
+#       steps:
+#         - name: Deploy
+#           run: |
+#             git config --global user.name $user_name
+#             git config --global user.email $user_email
+#             git remote set-url origin https://${github_token}@github.com/${repository}
+#             npm run deploy
+            
+#       env:
+#         user_name: 'github-actions[bot]'
+#         user_email: 'github-actions[bot]@users.noreply.github.com'
+#         github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+#         repository: ${{ github.repository }}
+        
+#   Docker:
+#     needs: [Build]
+#     runs-on: ubuntu-latest
+    
+#     steps:
+    
+#         - name: Login to Docker Hub
+#           uses: docker/login-action@v1
+#           with:
+#             username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#             password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          
+#         - name: Set up Docker Buildx
+#           uses: docker/setup-buildx-action@v1
+          
+#         - name: Build and push
+#           uses: docker/build-push-action@v2
+#           with:
+#             context: .
+#             file: ./Dockerfile
+#             push: true
+#             tags: ${{ secrets.DOCKER_HUB_USERNAME }}/numerical_react:latest
     
         
     
