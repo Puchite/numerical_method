@@ -22,14 +22,14 @@ jobs:
         node-version: 14.x
 
     - name: Install NPM packages
-      run: npm ci
+      run: yarn install
       # similar to npm install, for automated environments
 
     - name: Build project
-      run: npm run build # command to build project
+      run: yarn run build # command to build project
 
     - name: Run tests
-      run: npm run test # command to run tests
+      run: yarn run test # command to run tests
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v2 
@@ -59,6 +59,6 @@ jobs:
         target_branch: gh-pages
         build_dir: ./build
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # default secret for auth
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }} # default secret for auth
             
             
