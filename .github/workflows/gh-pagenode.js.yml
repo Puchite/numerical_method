@@ -30,17 +30,6 @@ jobs:
         
       - name: Test
         run: yarn test
-        env:
-          CI: true
-
-  deployment:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-
-    steps:
       - uses: actions/checkout@v2
 
       - name: Use Node.js ${{ matrix.node-version }}
@@ -55,6 +44,7 @@ jobs:
         run: |
           yarn run build
           yarn run export
+          
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
