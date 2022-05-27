@@ -1,19 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import * as math from 'mathjs'
-import { Chart } from 'chart.js'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import { DataGrid } from '@mui/x-data-grid';
 import './Polation.css'
-import {
-    LineChart,
-    Line,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
-} from "recharts";
 import { TextField } from '@mui/material';
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 

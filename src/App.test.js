@@ -1,18 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router} from 'react-router-dom';
-import { BrowserRouter} from "react-router-dom";
-import {createMemoryHistory} from 'history'
 import App from './App';
-import { render, screen, fireEvent, waitFor, within, getByText, cleanup} from '@testing-library/react';
-import UserEvent from '@testing-library/user-event';
+import { render, screen, fireEvent, waitFor} from '@testing-library/react';
 import LinearAlgebra from './Course/LinearAlgebra/LinearAlgebra';
 import RootEquation from './Course/RootOfEquation/RootEquation';
-import { wait } from '@testing-library/user-event/dist/utils';
 import Polation from './Course/Polation/Polation';
-import { Simulate } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event';
-import Course from './pages/Course';
 import LinearRegression from './Course/LinearRegression/LinearRegression';
 import axios from 'axios';
 

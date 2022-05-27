@@ -11,11 +11,8 @@ import {
 } from "recharts"
 import './LinearAlgebra.css';
 
-let e = Math.E
 let epsilon = 0.000001
 let ep = 0.0001;
-let elt;
-let calculator;
 
 const methodOption = [
     { value: "cramerRule", label: "Crammer's Rule" },
@@ -63,7 +60,6 @@ function LinearAlgebra() {
     const equationRef = useRef(equation)
     const problemRef = useRef(problem)
     const chartDataRef = useRef(chartData)
-    let tempAnswer;
 
     useEffect(() => {
 
@@ -199,7 +195,6 @@ function LinearAlgebra() {
 
     const handleMatrixBInput = (e) => {
 
-        let arrayA = []
         let arrayTemp = []
 
 
@@ -552,11 +547,9 @@ function LinearAlgebra() {
         let matrixDForm = math.multiply(matrixRForm, -1)
         let matrixDnew = math.multiply(matrixRForm, -1)
         let arrayXnew = math.zeros(math.size(matrixBForm))
-        let arrayError = Array(matrixAForm.length).fill(0)
         let error = 1
         let lambda_k = 0
         let alpha_k = 0
-        let count = 1
         let round = 1
 
         while (round < 20000) {
