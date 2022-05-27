@@ -11,9 +11,6 @@ import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material
 // import { Bar, Line } from "react-chartjs-2"; 
 
 
-let e = Math.E
-let epsilon = 0.000001
-const baseUrl = 'http://localhost:3001/root-equation/'
 
 // ChartJS.register(
 //     LineElement,
@@ -161,10 +158,6 @@ function Polation() {
         })
     }
 
-    const handleEquationInput = (e) => {
-        setEquation(e.target.value)
-        
-    }
 
     const handleMethod = (e) => {
 
