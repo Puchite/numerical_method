@@ -30,8 +30,6 @@ jobs:
 
         - name: Test
           run: yarn test
-          env:
-            CI: true
             
         - name: run build
           run: yarn run build
