@@ -28,7 +28,7 @@ jobs:
       - name: Install Script
         run: yarn global add react-scripts
         
-      - name: Test
+      - name: Yarn Test
         run: yarn test
       - uses: actions/checkout@v2
 
@@ -40,10 +40,8 @@ jobs:
       - name: Yarn install
         run: yarn install
 
-      - name: Build
-        run: |
-          npm run build
-          npm run deploy
+      - name: Yarn Build
+        run: yarn run build
           
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
