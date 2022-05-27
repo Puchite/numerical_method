@@ -34,7 +34,7 @@ jobs:
         - name: Test
           run: yarn test
                 
-        - name: Deploy to GitHub Pages
+        - name: Deploy to GitHub Pagess
           if: success()
           uses: github-pages@v3
           with:
