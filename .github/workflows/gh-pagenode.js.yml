@@ -27,17 +27,20 @@ jobs:
 
         - name: Install packages
           run: yarn install --frozen-lockfile
-
-        - name: Test
-          run: yarn test
             
         - name: run build
           run: yarn run build
-
-        - name: run deploy
-          run: yarn run deploy
-          env:
-            CD: true
+          
+        - name: Test
+          run: yarn test
                 
+        - name: Deploy to GitHub Pages
+          if: success()
+          uses: github-pages@v3
+          with:
+            target_branch: gh-pages
+            build_dir: public
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             
             
