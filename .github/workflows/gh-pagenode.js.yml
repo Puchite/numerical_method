@@ -33,20 +33,31 @@ jobs:
         env:
           CI: true
 
-      - name: Checkout 🛎️
-        uses: actions/checkout@master
+  deployment:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          persist-credentials: false
+          node-version: ${{ matrix.node-version }}
 
-      - name: Build 🏗️
-        run: yarn build
-        env:
-          NODE_ENV: production
+      - name: Yarn install
+        run: yarn install
 
-      - name: Deploy to GH Pages 🚀
-        if: ${{ github.event_name != 'pull_request' }}
+      - name: Build
+        run: |
+          yarn run build
+          yarn run export
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.REPO_TOKEN }}
-          publish_dir: dist
+          deploy_key: ${{ secrets.ACTIONS_SECRET_KEY }}
+          publish_dir: ./out
       
