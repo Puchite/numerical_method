@@ -3,7 +3,6 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { MathJax, MathJaxContext } from 'better-react-mathjax';
 import * as math from 'mathjs';
-import { column, derivative, evaluate, index, json, parse, row } from 'mathjs';
 import React, { useEffect, useRef, useState } from 'react';
 import {
     CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis,

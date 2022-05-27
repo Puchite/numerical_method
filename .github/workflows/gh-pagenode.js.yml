@@ -1,50 +1,58 @@
-name: Node.js CI
+name: Node.js CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-    install-and-test:
-      runs-on: ubuntu-latest
+  install-and-test:
+    runs-on: ubuntu-latest
 
-      strategy:
-        matrix:
-          node-version: [14.x]
+    strategy:
+      matrix:
+        node-version: [14.x]
 
-      steps:
-        - uses: actions/checkout@master
+    steps:
+      - uses: actions/checkout@master
 
-        - name: Set up Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@master
-          with:
-            node-version: ${{ matrix.node-version }}
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node-version }}
 
-        - name: Install packages
-          run: yarn install --frozen-lockfile
+      - name: Install packages
+        run: yarn install --frozen-lockfile
 
-        - name: Test
-          run: yarn test
-          env:
-            CI: true
-            
-    build-and-deploy:
-      concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout 🛎️
-          uses: actions/checkout@v3
+      - name: Test
+        run: yarn test
+        env:
+          CI: true
 
-        - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
-          run: |
-            yarn install
-            yarn run build
+build-deploy:
+  runs-on: ubuntu-latest
 
-        - name: Deploy 🚀
-          uses: JamesIves/github-pages-deploy-action@v4.3.3
-          with:
-            branch: gh-pages # The branch the action should deploy to.
-            folder: build # The folder the action should deploy.
+  steps:
+    - name: Checkout 🛎️
+      uses: actions/checkout@master
+      with:
+        persist-credentials: false
 
+    - name: Install 🔧
+      run: yarn install
+
+    - name: Lint 🧐
+      run: yarn lint:check
+
+    - name: Build 🏗️
+      run: yarn build
+      env:
+        NODE_ENV: production
+
+    - name: Deploy to GH Pages 🚀
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: dist
