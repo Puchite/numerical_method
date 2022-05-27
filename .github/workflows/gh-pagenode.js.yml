@@ -42,7 +42,7 @@ jobs:
 
       - name: Build
         run: |
-          yarn run build
+          yarn run deploy
           yarn run export
           
       - name: Deploy
