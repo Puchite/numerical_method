@@ -62,6 +62,7 @@ function RootEquation() {
     const chartAnswerRef = useRef(chartAnswer)
 
     let tempAnswer;
+    let tempObj;
 
 
     useEffect(() => {
@@ -243,6 +244,7 @@ function RootEquation() {
             try {
                 
                 
+                let point = "(" + tempAnswer + ",0)"
 
             } catch (error) {
                 
@@ -254,6 +256,9 @@ function RootEquation() {
 
             try {
 
+                let point = "(" + tempAnswer + ",0)";
+                let xLeft = "x=" + left;
+                let xRight = "x=" + right;
 
                 if (method === 'bisection' || method === 'falsePosition');
                 // eslint-disable-next-line no-lone-blocks
@@ -514,6 +519,7 @@ function RootEquation() {
             }
         ];
 
+        let test = Object.keys(objTable)[Object.keys(objTable).pop()]
         
         
         
