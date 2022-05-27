@@ -1,64 +1,50 @@
-name: CI/CD 
+name: Node.js CI
 
-on: # attribute determines how workflow gets triggered
-  push: # triggers on a`push` to the `main` branch
+on:
+  push:
     branches: [ main ]
-  workflow_dispatch: # triggers manually
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build: # job 1 identifier
-    name: Build
-    runs-on: ubuntu-latest
+    install-and-test:
+      runs-on: ubuntu-latest
 
-    steps:
-    - name: Clone repo & checkout code
-      uses: actions/checkout@v2 
-      # this action allows the runner to access your code by cloning it
+      strategy:
+        matrix:
+          node-version: [14.x]
 
-    - name: Install Node.js
-      uses: actions/setup-node@v2.4.0
-      # installs and sets up Node environment in our runner
-      with:
-        node-version: 14.x
+      steps:
+        - uses: actions/checkout@master
 
-    - name: Install NPM packages
-      run: yarn install
-      # similar to npm install, for automated environments
+        - name: Set up Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@master
+          with:
+            node-version: ${{ matrix.node-version }}
 
-    - name: Build project
-      run: yarn run build # command to build project
+        - name: Install packages
+          run: yarn install --frozen-lockfile
 
-    - name: Run tests
-      run: yarn run test # command to run tests
-
-    - name: Upload production-ready build files
-      uses: actions/upload-artifact@v2 
-      # uploads build files to be accessible across jobs
-      with:
-        name: production
-        path: ./build
-
-  deploy: # job 2 identifier
-    name: Deploy
-    needs: build 
-    # the build job must succeed in order to run this job
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v2 
-      # downloads the uploaded build files
-      with:
-        name: production
-        path: ./build
-
-    - name: Deploy to Github pages
-      uses: crazy-max/ghaction-github-pages@v2
-      # action to deploy to GitHub Pages
-      with:
-        target_branch: gh-pages
-        build_dir: ./build
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }} # default secret for auth
+        - name: Test
+          run: yarn test
+          env:
+            CI: true
             
-            
+    build-and-deploy:
+      concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout 🛎️
+          uses: actions/checkout@v3
+
+        - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+          run: |
+            yarn install
+            yarn run build
+
+        - name: Deploy 🚀
+          uses: JamesIves/github-pages-deploy-action@v4.3.3
+          with:
+            branch: gh-pages # The branch the action should deploy to.
+            folder: build # The folder the action should deploy.
+
