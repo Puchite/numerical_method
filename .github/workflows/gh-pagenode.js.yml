@@ -24,20 +24,12 @@ jobs:
 
         - name: Install packages
           run: yarn install --frozen-lockfile
-  Test:
-      needs: [Install]
-      runs-on: ubuntu-latest
-      
-      strategy:
-        matrix:
-          node-version: [14.x]
-        
-      steps:
+          
         - name : Test
           run : yarn test
-
+          
   Build:
-    needs: [Test]
+    needs: [Install]
     runs-on: ubuntu-latest
 
     strategy:
