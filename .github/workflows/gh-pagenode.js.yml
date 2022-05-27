@@ -30,20 +30,10 @@ jobs:
         env:
           CI: true
 
-  build-deploy:
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Checkout 🛎️
         uses: actions/checkout@master
         with:
           persist-credentials: false
-
-      - name: Install 🔧
-        run: yarn install
-
-      - name: Lint 🧐
-        run: yarn lint:check
 
       - name: Build 🏗️
         run: yarn build
@@ -54,5 +44,6 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.REPO_TOKEN }}
           publish_dir: dist
+      
