@@ -1,45 +1,61 @@
-# name: CI/CD
+name: CI/CD pipeline github-pages
 
-# on:
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-# jobs:
-#   Install:
-#       runs-on: ubuntu-latest
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v2
 
-#       strategy:
-#         matrix:
-#           node-version: [14.x]
+      - name: Install 
+        run: yarn install
+                 
+      - name: Test
+        run: yarn test
+
+   build-and-deploy :
+      needs: [test]
+      concurrency: ci-${{ github.ref }} 
+      runs-on: ubuntu-latest
+        
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Install
+          run: yarn install
+
+        - name: Build
+          run: yarn run build
+
+        - name: Deploy 
+          uses: JamesIves/github-pages-deploy-action@v4.3.3
+          with:
+            branch: gh-pages 
+            folder: build 
 
 #       steps:
 #         - uses: actions/checkout@master
 
-#         - name: Set up Node.js ${{ matrix.node-version }}
-#           uses: actions/setup-node@master
-#           with:
-#             node-version: ${{ matrix.node-version }}
-
-#         - name: Install packages
+#         - name: install packages
 #           run: yarn install --frozen-lockfile
         
-#         - name: Install react-scripts
+#         - name: install react-scripts
 #           run: yarn add global react-scripts
         
-#         - name : Test
+#         - name : test
 #           run : yarn test
           
 #         - name: Checkout repository
 #           uses: actions/checkout@v2
 
-#         - name: Upload coverage to Codecov
-#           uses: codecov/codecov-action@v1
-
-#         - name: Build
-#           run: yarn run build
-          
 #         - name: Deploy
 #           run: |
 #             git config --global user.name $user_name
@@ -63,8 +79,9 @@
 #             file: ./Dockerfile
 #             push: true
 #             tags: ${{ secrets.DOCKER_HUB_USERNAME }}/numerical_react:latest
-#   Build:
-#     needs: [Install]
+            
+#   build-and-deploy:
+#     needs: [test]
 #     runs-on: ubuntu-latest
 
 #     strategy:
@@ -121,27 +138,28 @@
 #             file: ./Dockerfile
 #             push: true
 #             tags: ${{ secrets.DOCKER_HUB_USERNAME }}/numerical_react:latest
-name: Build and Deploy
-on: [push]
-permissions: 
-  contents: write
-jobs:
-  build-and-deploy:
-    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v3
 
-      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
-        run: |
-          yarn install
-          yarn run build
+# name: Build and Deploy
+# on: [push]
+# permissions: 
+#   contents: write
+# jobs:
+#   build-and-deploy:
+#     concurrency: ci-${{ github.ref }} 
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout 🛎️
+#         uses: actions/checkout@v3
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: build # The folder the action should deploy.
+#       - name: Install and Build 🔧 
+#         run: |
+#           yarn install
+#           yarn run build
+
+#       - name: Deploy 🚀
+#         uses: JamesIves/github-pages-deploy-action@v4.3.3
+#         with:
+#           branch: gh-pages 
+#           folder: build 
         
     
