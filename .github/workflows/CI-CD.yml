@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    runs-on: ${{ matrix.os }} 
     strategy:
       matrix:
         os:
@@ -26,7 +27,7 @@ jobs:
             node_version: 14
             architecture: x86
             
-    runs-on: ${{ matrix.os }}
+#     runs-on: ${{ matrix.os }}
     steps:
     
       - name: Checkout
