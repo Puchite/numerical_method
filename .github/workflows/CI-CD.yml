@@ -1,4 +1,4 @@
-name: CI/CD pipeline github-pages
+name: CI/CD pipeline Github-Pages & Docker
 
 on:
   push:
@@ -24,6 +24,9 @@ jobs:
       needs: [test]
       concurrency: ci-${{ github.ref }} 
       runs-on: ubuntu-latest
+      environment: 
+        name: Production
+        url: https://puchite.github.io/numerical_method/
         
       steps:
         - name: Checkout
@@ -44,8 +47,23 @@ jobs:
   build-and-deploy-to-docker:
       needs: [test]
       runs-on: ubuntu-latest
-      
+      environment: 
+        name: Production
+        url: https://hub.docker.com/repository/docker/puchite/numerical_react
+        
       steps:    
+          - name: Checkout
+            uses: actions/checkout@v3
+
+          - name: Install
+            run: yarn install
+            
+          - name: Build
+            run: yarn run build
+            
+          - name: Checkout repository
+            uses: actions/checkout@v3
+            
           - name: Login to Docker Hub
             uses: docker/login-action@v1
             with:
@@ -64,31 +82,7 @@ jobs:
               tags: ${{ secrets.DOCKER_HUB_USERNAME }}/numerical_react:latest
             
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+    
 #       steps:
 #         - uses: actions/checkout@master
 
