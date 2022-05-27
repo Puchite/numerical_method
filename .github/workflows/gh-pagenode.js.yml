@@ -24,7 +24,10 @@ jobs:
 
         - name: Install packages
           run: yarn install --frozen-lockfile
-          
+        
+        - name: Install react-scripts
+          run: yarn add react-scripts
+        
         - name : Test
           run : yarn test
           
