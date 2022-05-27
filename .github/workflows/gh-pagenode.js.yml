@@ -1,46 +1,64 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+name: CI/CD 
 
-name:  CI/CD on gh-pages
-
-on:
-  push:
+on: # attribute determines how workflow gets triggered
+  push: # triggers on a`push` to the `main` branch
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch: # triggers manually
 
 jobs:
-  install-and-test:
-      runs-on: ubuntu-latest
+  build: # job 1 identifier
+    name: Build
+    runs-on: ubuntu-latest
 
-      strategy:
-        matrix:
-          node-version: [14.x]
+    steps:
+    - name: Clone repo & checkout code
+      uses: actions/checkout@v2 
+      # this action allows the runner to access your code by cloning it
 
-      steps:
-        - uses: actions/checkout@master
+    - name: Install Node.js
+      uses: actions/setup-node@v2.4.0
+      # installs and sets up Node environment in our runner
+      with:
+        node-version: 14.x
 
-        - name: Set up Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@master
-          with:
-            node-version: ${{ matrix.node-version }}
+    - name: Install NPM packages
+      run: yarn install
+      # similar to npm install, for automated environments
 
-        - name: Install packages
-          run: yarn install --frozen-lockfile
-            
-        - name: run build
-          run: yarn run build
-          
-        - name: Test
-          run: yarn test
-                
-        - name: Deploy to GitHub Pages
-          if: success()
-          uses: github-pages@v3
-          with:
-            target_branch: gh-pages
-            build_dir: public
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build project
+      run: yarn run build # command to build project
+
+    - name: Run tests
+      run: yarn run test # command to run tests
+
+    - name: Upload production-ready build files
+      uses: actions/upload-artifact@v2 
+      # uploads build files to be accessible across jobs
+      with:
+        name: production
+        path: ./build
+
+  deploy: # job 2 identifier
+    name: Deploy
+    needs: build 
+    # the build job must succeed in order to run this job
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v2 
+      # downloads the uploaded build files
+      with:
+        name: production
+        path: ./build
+
+    - name: Deploy to Github pages
+      uses: crazy-max/ghaction-github-pages@v2
+      # action to deploy to GitHub Pages
+      with:
+        target_branch: gh-pages
+        build_dir: ./build
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }} # default secret for auth
             
             
