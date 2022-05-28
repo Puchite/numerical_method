@@ -54,13 +54,7 @@ jobs:
       steps:    
           - name: Checkout
             uses: actions/checkout@v3
-
-          - name: Install
-            run: yarn install
-            
-          - name: Build
-            run: yarn run build
-            
+         
           - name: Checkout repository
             uses: actions/checkout@v3
             
