@@ -74,9 +74,7 @@ jobs:
               file: ./Dockerfile
               push: true
               tags: ${{ secrets.DOCKER_HUB_USERNAME }}/numerical_react:latest
-            
-            
-    
+               
 #       steps:
 #         - uses: actions/checkout@master
 
