@@ -1,6 +1,17 @@
 # DEMO https://puchite.github.io/numerical_method/
 
-# Getting Started with Create React App
+project react-app พัฒนาโดยใช้ภาษา javascript 
+
+มี api เป็น json-server deploy on heroku
+# API Document https://numerical-react-api.herokuapp.com/api-doc
+
+CI/CD pipeline บน github pages และ docker hub
+
+โปรเจคดังกล่าวเป็นส่วนหนึ่งวิชา 040613393	NUMERICAL METHODS ปีที่ 3 เทอมที่ 2 ปีการศึกษา 2564 มหาวิทยาลัยพระจอมเกล้าพระนครเหนือ <br/>
+จัดทำโดย <br/>
+นายภูชิชย์ เสงี่ยมกิ่ง 6204062616316 <br/>
+
+<!-- # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -70,3 +81,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `yarn build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+ -->
